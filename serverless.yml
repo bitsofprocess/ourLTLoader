@@ -1,0 +1,91 @@
+org: bitsofprocess
+app: ourlt
+service: ourLT
+frameworkVersion: '3'
+plugins:
+  - serverless-webpack
+  - serverless-dynamodb-local
+  # - serverless-dynamodb-client
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  environment:
+      tableName: ${self:custom.tableName}
+  #   DYNAMODB_TABLE: "params-${sls:stage}"
+  httpApi:
+    cors: true
+  iam:
+    role:
+      statements:
+  #       - Effect: Allow
+  #         Action:
+  #           - dynamodb:Query
+  #           - dynamodb:Scan
+  #           - dynamodb:GetItem
+  #           - dynamodb:PutItem
+  #           - dynamodb:UpdateItem
+  #           - dynamodb:DeleteItem
+          # Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+    # iamRoleStatements:
+        - Effect: Allow
+          Action:
+              - dynamodb:*
+              - s3:*
+              - ses:*
+          Resource: '*'
+
+package:
+    individually: true
+
+
+functions:
+  simple:
+    handler: simple.simple
+    events:
+      - httpApi:
+          path: /
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    ourLTProd:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ourLT-prod
+        AttributeDefinitions:
+          -
+            AttributeName: team_id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: team_id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+custom:
+#  webpack:
+#   webpackConfig: 'webpack.config.js' # Name of webpack configuration file
+  # includeModules: false # Node modules configuration for packaging
+  # packager: 'npm' # Packager that will be used to package your external modules
+
+  tableName: ourLT-prod
+  dynamodb:
+    stages:
+      - dev   
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+    migration: 
+      dir: offline/migrations
+
+    seed:
+      domain:
+        sources:
+          - table: ourLT-prod
+
+

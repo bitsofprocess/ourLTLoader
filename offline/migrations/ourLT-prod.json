@@ -1,0 +1,21 @@
+{
+    "Table": {
+        "TableName": "ourLT-prod",
+        "KeySchema": [
+            {
+                "AttributeName": "team_id",
+                "KeyType": "HASH"
+            }
+        ],
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "team_id",
+                "AttributeType": "S"
+            }
+        ],
+        "ProvisionedTHroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapactityUnits": 1
+        }
+    }
+}
