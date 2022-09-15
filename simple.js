@@ -25,16 +25,18 @@ new AWS.DynamoDB({
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 
-module.exports.simple = (event, context, callback) => {
+module.exports.simple = async (event, context, callback) => {
   var params = {
     TableName: "ourLT-prod",
   };
 
+  let tableData;
+
   try {
-    let dbResponse = dynamodb
+    let dbResponse = await dynamodb
       .scan(params)
       .promise()
-      .then((data) => console.log(data));
+      .then((data) => tableData = JSON.stringify(data));
   
   } catch (err) {
     console.log(err);
@@ -42,7 +44,7 @@ module.exports.simple = (event, context, callback) => {
 
   const response = {
     statusCode: 200,
-    body: "Success",
+    body: tableData,
   };
 
 
