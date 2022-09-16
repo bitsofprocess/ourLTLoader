@@ -1,6 +1,6 @@
 
-const { checkIfAllDataPresent } = require('./checkIfAllDataPresent');
-const { checkForSpecialChar } = require('./checkForSpecialChar')
+const { validateCsv } = require('./validateCsv');
+const { checkForSpecialChar } = require('./functions/checkForSpecialChar')
 
 const csvFile = process.argv[2]
 
@@ -8,7 +8,7 @@ const postLT = async (file) => {
 
     // pull in data, check existing titles
 
-    const allDataPresent = await checkIfAllDataPresent(file);
+    const allDataPresent = await validateCsv(file);
 
     console.log(allDataPresent)
 

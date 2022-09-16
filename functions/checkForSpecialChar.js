@@ -1,4 +1,4 @@
-const { csvToJson } = require("./functions/csvToJson");
+const { csvToJson } = require("./csvToJson");
 
 const {
     questionFreeOfSpecialChar,
