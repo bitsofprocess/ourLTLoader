@@ -15,7 +15,31 @@ const checkIfAllDataPresent = async (file) => {
   // no special characters
   // max length
 
-  const passCharCheck = await checkForSpecialChar(file);
+    const passCharCheck = await checkForSpecialChar(file);
+
+    const questionArray = await csvToJson(file);
+    const element = questionArray[1];
+    let valueCheck = [];
+    let passedValueCheck;
+
+    questionArray.forEach(element => {
+        const valuesArray = Object.values(element);
+
+        if (valuesArray.includes('')) {
+            valueCheck.push('false');
+        } else {
+            valueCheck.push('true');
+        }
+
+  
+
+    }) 
+    
+    if (valueCheck.includes('false')) {
+        passedValueCheck = false;
+    }
+
+    console.log(passedValueCheck)
 
 };
 
