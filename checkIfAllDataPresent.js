@@ -4,9 +4,14 @@
 // const CsvReadableStream = require('csv-reader');
 // const Fs = require('fs');
 
+// const {
+//   questionHasSpecialCharacters,
+//   answerHasSpecialCharacters,
+// } = require("./specialCharCheck");
+
 const {
-  questionHasSpecialCharacters,
-  answerHasSpecialCharacters,
+  questionFreeOfSpecialChar,
+  answerFreeOfSpecialChar,
 } = require("./specialCharCheck");
 
 const { csvToJson } = require("./functions/csvToJson");
@@ -26,45 +31,32 @@ const checkIfAllDataPresent = async (file) => {
     "wrong_answer_3",
   ];
 
-
   const questionsArray = await csvToJson(file);
   const element = questionsArray[0];
-  let validationArray = []
-  let failedValidation
-  questionsArray.forEach(element => {
-  for (const key of requiredKeys) {
-    if (key === "question") {
-        let result = questionHasSpecialCharacters(element[key])
-        validationArray.push(result)
-    } else if (key === "wrong_answer_1" || "wrong_answer_2" || "wrong_answer_3") {
-        let result = answerHasSpecialCharacters(element[key])
-        validationArray.push(result)
-    }
-    } 
+  let validationArray = [];
+  let passedValidation;
 
-    })
 
-    if (validationArray.includes(true)) {
-        failedValidation = 'true'
+  questionsArray.forEach((element) => {
+    for (const key of requiredKeys) {
+      if (key === "question") {
+        let result = questionFreeOfSpecialChar(element[key]);
+        validationArray.push(result);
+      } else if (
+        key === "wrong_answer_1" ||
+        "wrong_answer_2" ||
+        "wrong_answer_3"
+      ) {
+        let result = answerFreeOfSpecialChar(element[key]);
+        validationArray.push(result);
+      }
     }
-    console.log(failedValidation)
-//       if (answerHasSpecialCharacters(element[key])) {
-//         // return 'true'
-//         console.log(`${key} : true`);
-//       } else {
-//         //return 'false'
-//         console.log("false");
-//       }
-//     } else {
-//         if (key === "question") {
-//             if (questionHasSpecialCharacters(element[key])) {
-//                 console.log(`${key} : true`);
-//             } else {
-//                 console.log(`${key} : false`);
-//             }
-//         }
-//       }
-  } 
-// };
+  });
+
+  if (validationArray.includes(false)) {
+    passedValidation = false;
+  }
+  return passedValidation
+};
 
 checkIfAllDataPresent(csvFile);
