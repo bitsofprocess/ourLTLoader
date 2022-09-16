@@ -1,0 +1,46 @@
+const { csvToJson } = require("./functions/csvToJson");
+
+const {
+    questionFreeOfSpecialChar,
+    answerFreeOfSpecialChar,
+  } = require("./specialCharCheck");
+  
+const csvFile = process.argv[2]
+
+module.exports.checkForSpecialChar = async (file) => {
+  
+    const requiredKeys = [
+        "question",
+        "correct_answer",
+        "wrong_answer_1",
+        "wrong_answer_2",
+        "wrong_answer_3",
+      ];
+    
+      const questionsArray = await csvToJson(file);
+      let validationArray = [];
+      let passedValidation;
+    
+    
+      questionsArray.forEach((element) => {
+        for (const key of requiredKeys) {
+          if (key === "question") {
+            let result = questionFreeOfSpecialChar(element[key]);
+            validationArray.push(result);
+          } else if (
+            key === "wrong_answer_1" ||
+            "wrong_answer_2" ||
+            "wrong_answer_3"
+          ) {
+            let result = answerFreeOfSpecialChar(element[key]);
+            validationArray.push(result);
+          }
+        }
+      });
+    
+      if (validationArray.includes(false)) {
+        passedValidation = false;
+      }
+      return passedValidation
+      
+}

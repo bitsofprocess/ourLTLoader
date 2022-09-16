@@ -1,7 +1,10 @@
 
+const { checkIfAllDataPresent } = require('./checkIfAllDataPresent');
+const { checkForSpecialChar } = require('./checkForSpecialChar')
+
 const csvFile = process.argv[2]
 
-const postLT = async (file, title, owner, team_id) => {
+const postLT = async (file) => {
 
     // pull in data, check existing titles
 
@@ -31,4 +34,4 @@ const postLT = async (file, title, owner, team_id) => {
 
     }
 
-    console.log(postLT(csvFile))
+(postLT(csvFile))
