@@ -1,9 +1,3 @@
-// const csval = require('csval');
-// const CSV = require('csv-string');
-// var validate = require('jsonschema').validate;
-// const CsvReadableStream = require('csv-reader');
-// const Fs = require('fs');
-
 const { checkAllValues } = require("./checkAllValues");
 const { checkForSpecialChar } = require("./functions/checkForSpecialChar");
 
