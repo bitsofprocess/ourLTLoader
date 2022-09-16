@@ -1,12 +1,12 @@
-const { csvToJson } = require("./functions/csvToJson");
+const { csvToJson } = require("./csvToJson");
 
 
-module.exports.checkAllValues = async (file) => {
-  const questionArray = await csvToJson(file);
+module.exports.checkAllValues = async (questionsArray) => {
+  
   let valueCheck = [];
   let passedValueCheck;
 
-  questionArray.forEach((element) => {
+  questionsArray.forEach((element) => {
     const valuesArray = Object.values(element);
 
     if (valuesArray.includes("")) {

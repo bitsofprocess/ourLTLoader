@@ -7,8 +7,8 @@ const {
   
 const csvFile = process.argv[2]
 
-module.exports.checkForSpecialChar = async (file) => {
-  
+module.exports.checkForSpecialChar = async (questionsArray) => {
+    
     const requiredKeys = [
         "question",
         "correct_answer",
@@ -17,7 +17,6 @@ module.exports.checkForSpecialChar = async (file) => {
         "wrong_answer_3",
       ];
     
-      const questionsArray = await csvToJson(file);
       let validationArray = [];
       let passedValidation;
     

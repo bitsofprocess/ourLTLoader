@@ -1,6 +1,6 @@
 
 const { validateCsv } = require('./validateCsv');
-const { checkForSpecialChar } = require('./functions/checkForSpecialChar')
+const { checkForSpecialChar } = require('./subFunctions/checkForSpecialChar')
 
 const csvFile = process.argv[2]
 
