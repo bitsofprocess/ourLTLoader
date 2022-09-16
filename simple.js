@@ -7,11 +7,11 @@ var AWS = require("aws-sdk");
 // const { DynamoDB } = require('serverless-dynamodb-client');
 
 
-new AWS.DynamoDB({
-  LOCAL_DDB_HOST: "localhost",
-  LOCAL_DDB_PORT: "8000",
-  LOCAL_DDB_ENDPOINT: "http://localhost:8000",
-});
+// new AWS.DynamoDB({
+//   LOCAL_DDB_HOST: "localhost",
+//   LOCAL_DDB_PORT: "8000",
+//   LOCAL_DDB_ENDPOINT: "http://localhost:8000",
+// });
 
 // let options = {}
 

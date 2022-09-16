@@ -71,7 +71,7 @@ custom:
 #   includeModules: false # Node modules configuration for packaging
 #   packager: 'npm' # Packager that will be used to package your external modules
 
-  tableName: ourLT-prod
+  tableName: x
   dynamodb:
     stages:
       - dev   
