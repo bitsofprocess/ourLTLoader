@@ -7,9 +7,9 @@ const { csvToJson } = require("../subFunctions/csvToJson");
 
 const csvFile = process.argv[2];
 
-module.exports.getValidationDetails = async (file, title, dynamoTable) => {
-  const questionsArray = await csvToJson(file);
-  let validationArray = []; // if all bools pushed to array are true, validateCsv returns true
+module.exports.getValidationDetails = async (questionsArray, title, dynamoTable) => {
+  // const questionsArray = await csvToJson(file);
+
   let passesCharCheck;
   let allValuesPresent;
   let passesLengthCheck;
@@ -18,29 +18,18 @@ module.exports.getValidationDetails = async (file, title, dynamoTable) => {
     passesCharCheck,
     allValuesPresent,
     passesLengthCheck,
-    passesTitleCheck
-  }
- 
+    passesTitleCheck,
+  };
 
-  validationCriteria.passesCharCheck = await checkForSpecialChar(questionsArray);
-  // validationArray.push(passesCharCheck);
+  validationCriteria.passesCharCheck = await checkForSpecialChar(
+    questionsArray
+  );
 
   validationCriteria.allValuesPresent = await checkAllValues(questionsArray);
-  // validationArray.push(allValuesPresent);
 
   validationCriteria.passesLengthCheck = await maxLengthCheck(questionsArray);
-  // validationArray.push(passesLengthCheck);
 
   validationCriteria.passesTitleCheck = await compareTitles(dynamoTable, title);
-  // validationArray.push(passesTitleCheck);
-
 
   return validationCriteria;
-  // if (validationArray.includes(false)) {
-  //   csvPassesValidation = false;
-  // } else {
-  //   csvPassesValidation = true;
-  // }
-  // return csvPassesValidation;
-  // return validationCriteria
 };
