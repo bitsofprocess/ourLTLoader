@@ -48,6 +48,13 @@ functions:
           path: /
           method: get
           cors: true
+  # postOurLT:
+  #   handler: post.postOurLT
+  #   events:
+  #     - httpApi:
+  #         path: /
+  #         method: get, post
+  #         cors: true 
 
 resources:
   Resources:
