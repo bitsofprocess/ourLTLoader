@@ -3,7 +3,8 @@ const { getDynamoTable } = require("./mainFunctions/getDynamoTable");
 const {
   getValidationDetails,
 } = require("./mainFunctions/getValidationDetails");
-const { validateCriteria } = require("./validateCriteria");
+const { validateCriteria } = require("./mainFunctions/validateCriteria");
+const { assignIndexes } = require('./assignIndexes');
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -38,40 +39,15 @@ const postOurtLT = async (file, tableName, dynamodb, title) => {
     title,
     dynamoTable
   );
-  
+
   const allCriteriaValid = await validateCriteria(validationCriteriaObject);
- 
+
   if (!allCriteriaValid) {
-    console.log("CSV failed Validation");
+    console.log("CSV failed Validation: ", validationCriteriaObject);
   } else {
-    console.log('Success')
-    // let newJson = questionsArray.map((question) => {
-    //   console.log(question)
-    // const correct_answer = generateRandomInteger(0, 3);
-    // let shuffledAnswers = question.incorrect_answers.sort(
-    //   (a, b) => 0.5 - Math.random()
-    // );
-    // shuffledAnswers.splice(correct_answer, 0, question.correct_answer);
-    // const json = {
-    //   category: question.category,
-    //   difficulty: question.difficulty,
-    //   question: question.question,
-    //   correct_answer: correct_answer,
-    //   answers: shuffledAnswers,
-    // };
-    // const obj = {
-    //   category: question.category,
-    //   difficulty: question.difficulty,
-    //   question: question.question,
-    //   correct_answer: question.correct_answer,
-    //   wrong_answer_1: question.incorrect_answers[0],
-    //   wrong_answer_2: question.incorrect_answers[1],
-    //   wrong_answer_3: question.incorrect_answers[2],
-    //   json: json,
-    // };
-    //   return json;
-    // });
-    // const structuredQuestions = await assignIndexes(file);
+  
+    const structuredQuestions = await assignIndexes(questionsArray);
+
     // const questionArray = await createQuestionArray(structuredQuestions);
     // // pull in current data
     // const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
