@@ -1,6 +1,7 @@
-const { csvToJson } = require('./subFunctions/csvToJson');
+const { csvToJson } = require("./subFunctions/csvToJson");
 const { getDynamoTable } = require("./mainFunctions/getDynamoTable");
-const { validateCsv } = require("./mainFunctions/validateCsv");
+const { getValidationDetails } = require("./mainFunctions/getValidationDetails");
+const { validateCriteria } = require('./validateCriteria');
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -21,61 +22,59 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-// tableName, dynamodb, title, 
+// tableName, dynamodb, title,
 
 const postOurtLT = async (file, tableName, dynamodb, title) => {
   const questionsArray = await csvToJson(file);
 
-  
   // pull in data, check existing titles
 
   const dynamoTable = await getDynamoTable(tableName, dynamodb);
 
-  const validationPassed = await validateCsv(file, title, dynamoTable);
-  console.log(validationPassed)
+  const validationCriteriaObject = await getValidationDetails(file, title, dynamoTable);
+
+  const allCriteriaValid = await validateCriteria(validationCriteriaObject)
+
   // if (!validationPassed) {
   //   console.log("CSV failed Validation");
   // } else {
   //   console.log('hi');
-    // let newJson = questionsArray.map((question) => {
-    //   console.log(question)
-      // const correct_answer = generateRandomInteger(0, 3);
-      // let shuffledAnswers = question.incorrect_answers.sort(
-      //   (a, b) => 0.5 - Math.random()
-      // );
-      // shuffledAnswers.splice(correct_answer, 0, question.correct_answer);
-      // const json = {
-      //   category: question.category,
-      //   difficulty: question.difficulty,
-      //   question: question.question,
-      //   correct_answer: correct_answer,
-      //   answers: shuffledAnswers,
-      // };
-      // const obj = {
-      //   category: question.category,
-      //   difficulty: question.difficulty,
-      //   question: question.question,
-      //   correct_answer: question.correct_answer,
-      //   wrong_answer_1: question.incorrect_answers[0],
-      //   wrong_answer_2: question.incorrect_answers[1],
-      //   wrong_answer_3: question.incorrect_answers[2],
-      //   json: json,
-      // };
-    //   return json;
-    // }); 
+  // let newJson = questionsArray.map((question) => {
+  //   console.log(question)
+  // const correct_answer = generateRandomInteger(0, 3);
+  // let shuffledAnswers = question.incorrect_answers.sort(
+  //   (a, b) => 0.5 - Math.random()
+  // );
+  // shuffledAnswers.splice(correct_answer, 0, question.correct_answer);
+  // const json = {
+  //   category: question.category,
+  //   difficulty: question.difficulty,
+  //   question: question.question,
+  //   correct_answer: correct_answer,
+  //   answers: shuffledAnswers,
+  // };
+  // const obj = {
+  //   category: question.category,
+  //   difficulty: question.difficulty,
+  //   question: question.question,
+  //   correct_answer: question.correct_answer,
+  //   wrong_answer_1: question.incorrect_answers[0],
+  //   wrong_answer_2: question.incorrect_answers[1],
+  //   wrong_answer_3: question.incorrect_answers[2],
+  //   json: json,
+  // };
+  //   return json;
+  // });
 
-    
-    // const structuredQuestions = await assignIndexes(file);
-    // const questionArray = await createQuestionArray(structuredQuestions);
-    // // pull in current data
-    // const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
-    // const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
-    // // add new object to question sets
-    // const success = await addToDynamo(team_id, wrappedArray);
+  // const structuredQuestions = await assignIndexes(file);
+  // const questionArray = await createQuestionArray(structuredQuestions);
+  // // pull in current data
+  // const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
+  // const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
+  // // add new object to question sets
+  // const success = await addToDynamo(team_id, wrappedArray);
   // }
 };
 
-const newTitle = 'newTitle'
-postOurtLT(csvFile, tableName, dynamodb, newTitle)
-
-
+const newTitle = "newTitle";
+postOurtLT(csvFile, tableName, dynamodb, newTitle);

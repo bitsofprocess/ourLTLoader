@@ -7,7 +7,7 @@ const { csvToJson } = require("../subFunctions/csvToJson");
 
 const csvFile = process.argv[2];
 
-module.exports.validateCsv = async (file, title, dynamoTable) => {
+module.exports.getValidationDetails = async (file, title, dynamoTable) => {
   const questionsArray = await csvToJson(file);
   let validationArray = []; // if all bools pushed to array are true, validateCsv returns true
   let passesCharCheck;
