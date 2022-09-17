@@ -1,6 +1,6 @@
 const { getDynamoTable } = require("./mainFunctions/getDynamoTable");
 const { validateCsv } = require("./mainFunctions/validateCsv");
-const { getCurrentTitles } = require("./getCurrentTitles");
+const { getCurrentTitles, compareTitles } = require("./compareTitles");
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -26,23 +26,20 @@ const postOurtLT = async (tableName, dynamodb, title, file) => {
 
   const dynamoTable = await getDynamoTable(tableName, dynamodb);
 
-  const currentTitleArray = getCurrentTitles(dynamoTable);
+  const validationPassed = await validateCsv(file, title, dynamoTable);
 
-  // const existingTitles = await checkExistingTitles(dynamoTable);
-
-  // const allDataPresent = await validateCsv(file);
-
-  // if (!allDataPresent) {
-  //   console.log("CSV failed Validation");
-  // } else {
-  //     const structuredQuestions = await assignIndexes(file);
-  //     const questionArray = await createQuestionArray(structuredQuestions);
-  //     // pull in current data
-  //     const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
-  //     const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
-  //     // add new object to question sets
-  //     const success = await addToDynamo(team_id, wrappedArray);
-  // }
+  if (!allDataPresent) {
+    console.log("CSV failed Validation");
+  } else {
+      // const structuredQuestions = await assignIndexes(file);
+      // const questionArray = await createQuestionArray(structuredQuestions);
+      // // pull in current data
+      // const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
+      // const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
+      // // add new object to question sets
+      // const success = await addToDynamo(team_id, wrappedArray);
+  }
 };
 
-postOurtLT(tableName, dynamodb, csvFile);
+const title = "New Quiz";
+postOurtLT(tableName, dynamodb, title, csvFile);
