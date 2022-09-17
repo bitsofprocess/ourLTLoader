@@ -1,8 +1,9 @@
-const { getDynamoTable } = require('./getDynamoTable');
+const { getDynamoTable } = require("./mainFunctions/getDynamoTable");
 const { validateCsv } = require("./mainFunctions/validateCsv");
+const { getCurrentTitles } = require("./getCurrentTitles");
 
 const csvFile = process.argv[2];
-const tableName = 'ourLT-prod'
+const tableName = "ourLT-prod";
 const myCredentials = {
   accessKeyId: process.argv[3],
   secretAccessKey: process.argv[4],
@@ -20,11 +21,12 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const postOurtLT = async (tableName, dynamodb, file) => {
+const postOurtLT = async (tableName, dynamodb, title, file) => {
   // pull in data, check existing titles
 
   const dynamoTable = await getDynamoTable(tableName, dynamodb);
-  console.log(dynamoTable)
+
+  const currentTitleArray = getCurrentTitles(dynamoTable);
 
   // const existingTitles = await checkExistingTitles(dynamoTable);
 
@@ -33,13 +35,13 @@ const postOurtLT = async (tableName, dynamodb, file) => {
   // if (!allDataPresent) {
   //   console.log("CSV failed Validation");
   // } else {
-    //     const structuredQuestions = await assignIndexes(file);
-    //     const questionArray = await createQuestionArray(structuredQuestions);
-    //     // pull in current data
-    //     const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
-    //     const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
-    //     // add new object to question sets
-    //     const success = await addToDynamo(team_id, wrappedArray);
+  //     const structuredQuestions = await assignIndexes(file);
+  //     const questionArray = await createQuestionArray(structuredQuestions);
+  //     // pull in current data
+  //     const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
+  //     const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
+  //     // add new object to question sets
+  //     const success = await addToDynamo(team_id, wrappedArray);
   // }
 };
 
