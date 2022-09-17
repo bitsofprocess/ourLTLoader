@@ -13,6 +13,7 @@ const GetData = async () => {
     const res = await axios.get(url);
     // console.log(res.data.results);
     const questions = res.data.results;
+    console.log(questions)
     let toCsv = questions.map(question => {
         const correct_answer = generateRandomInteger(0,3);
         let shuffledAnswers = question.incorrect_answers.sort((a, b) => 0.5 - Math.random());
@@ -36,6 +37,7 @@ const GetData = async () => {
         };
         return obj;
     });
+    console.log('toCsv: ', toCsv )
     // console.log(toCsv);
     fs.stat(filename, function (err, stat) {
         if (err) {

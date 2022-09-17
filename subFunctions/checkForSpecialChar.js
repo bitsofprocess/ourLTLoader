@@ -26,6 +26,7 @@ module.exports.checkForSpecialChar = async (questionsArray) => {
           if (key === "question") {
             let result = questionFreeOfSpecialChar(element[key]);
             validationArray.push(result);
+
           } else if (
             key === "wrong_answer_1" ||
             "wrong_answer_2" ||
@@ -39,7 +40,9 @@ module.exports.checkForSpecialChar = async (questionsArray) => {
     
       if (validationArray.includes(false)) {
         passedValidation = false;
+      } else {
+        passedValidation = true;
       }
       return passedValidation
-      
+    
 }

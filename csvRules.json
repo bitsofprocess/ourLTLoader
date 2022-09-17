@@ -1,5 +1,5 @@
-module.exports= {
-  "properties": {
+{
+"properties": {
     "question": {
       "type": "string",
       "maximum": 40
@@ -17,8 +17,8 @@ module.exports= {
     },
     "wrong_answer_2": {
       "type": "string",
-      // "maximum": 40,
-      // "pattern": "[a-zA-Z0-9]"
+      "maximum": 40,
+      "pattern": "[a-zA-Z0-9]"
     },
     "wrong_answer_3": {
       "type": "string",

@@ -4,7 +4,7 @@ module.exports.maxLengthCheck = async (questionsArray) => {
 
   questionsArray.forEach((element) => {
     for (key in element) {
-      if (element[key].length < 40) {
+      if (element[key].length < 200) {
         lengthCheck.push(true);
       } else {
         lengthCheck.push(false);

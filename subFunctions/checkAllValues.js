@@ -18,6 +18,8 @@ module.exports.checkAllValues = async (questionsArray) => {
 
   if (valueCheck.includes("false")) {
     passedValueCheck = false;
+  } else {
+    passedValueCheck = true;
   }
 
   return passedValueCheck;
