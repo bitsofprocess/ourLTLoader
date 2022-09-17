@@ -4,7 +4,7 @@ const {
   getValidationDetails,
 } = require("./mainFunctions/getValidationDetails");
 const { validateCriteria } = require("./mainFunctions/validateCriteria");
-const { assignIndexes } = require('./assignIndexes');
+const { assignIndexes } = require('./mainFunctions/assignIndexes');
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -25,12 +25,8 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-// tableName, dynamodb, title,
-
 const postOurtLT = async (file, tableName, dynamodb, title) => {
   const questionsArray = await csvToJson(file);
-
-  // pull in data, check existing titles
 
   const dynamoTable = await getDynamoTable(tableName, dynamodb);
 
