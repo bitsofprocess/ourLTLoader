@@ -5,10 +5,10 @@ const {
 } = require("./mainFunctions/getValidationDetails");
 const { validateCriteria } = require("./mainFunctions/validateCriteria");
 const { assignIndexes } = require("./mainFunctions/assignIndexes");
-const { getNewSetId } = require("./getNewSetId");
-const { wrapQuestionSet } = require('./wrapQuestionSet');
-const { addToExistingTable } = require('./addToExistingTable');
-const { addToDynamo } = require('./addToDynamo');
+const { getNewSetId } = require("./mainFunctions/getNewSetId");
+const { wrapQuestionSet } = require('./mainFunctions/wrapQuestionSet');
+const { addToExistingTable } = require('./mainFunctions/addToExistingTable');
+const { addToDynamo } = require('./mainFunctions/addToDynamo');
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -53,38 +53,12 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
    
     const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable);
     
-  
-    // let params = {
-    //   RequestItems: {
-    //     'ourLT-prod': [
-    //       {
-    //         PutRequest: {
-    //          Item: {
-    //           team_id: team_id,
-    //           question_sets: updatedTable
-    //          }
-    //         }
-    //       }
-    //     ]
-    //   }
-    // }
-
-
-    // try {
-    //   res = await dynamodb.batchWrite(params).promise()
-    //   let data = res;
-    //   console.log('Processed: ', JSON.stringify(wrappedQuestionSet, null, 3))
-    // } catch(err) {
-    //   console.log(err)
-    // }
-
     const result = await addToDynamo(team_id, updatedTable, dynamodb);
 
-    // return result;
   }
 };
 
 const ownerTest = "google_10940940941049"
-const newTitle = "newTitle";
+const newTitle = "test title";
 const myTeamId = 'FIEO'
 postOurtLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);

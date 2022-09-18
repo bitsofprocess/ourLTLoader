@@ -42,7 +42,7 @@ package:
 
 functions:
   simple:
-    handler: simple.simple
+    handler: SLStest.simple
     events:
       - httpApi:
           path: /
