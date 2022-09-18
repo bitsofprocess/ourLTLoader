@@ -8,6 +8,7 @@ const { assignIndexes } = require("./mainFunctions/assignIndexes");
 const { getNewSetId } = require("./getNewSetId");
 const { wrapQuestionSet } = require('./wrapQuestionSet');
 const { addToExistingTable } = require('./addToExistingTable');
+const { addToDynamo } = require('./addToDynamo');
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -49,37 +50,36 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
     const newSetId = await getNewSetId(dynamoTable);
 
     const wrappedQuestionSet = await wrapQuestionSet(newSetId, owner, title, structuredQuestions);
-
    
     const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable);
     
-    let params = {
-      RequestItems: {
-        'ourLT-prod': [
-          {
-            PutRequest: {
-             Item: {
-              team_id: team_id,
-              question_sets: updatedTable
-             }
-            }
-          }
-        ]
-      }
-    }
+    // let params = {
+    //   RequestItems: {
+    //     'ourLT-prod': [
+    //       {
+    //         PutRequest: {
+    //          Item: {
+    //           team_id: team_id,
+    //           question_sets: updatedTable
+    //          }
+    //         }
+    //       }
+    //     ]
+    //   }
+    // }
 
 
-    try {
-      res = await dynamodb.batchWrite(params).promise()
-      let data = res;
-      console.log('Processed: ', JSON.stringify(wrappedQuestionSet, null, 3))
-    } catch(err) {
-      console.log(err)
-    }
+    // try {
+    //   res = await dynamodb.batchWrite(params).promise()
+    //   let data = res;
+    //   console.log('Processed: ', JSON.stringify(wrappedQuestionSet, null, 3))
+    // } catch(err) {
+    //   console.log(err)
+    // }
 
-    // const success = await addToDynamo(team_id, wrappedArray);
+    const result = await addToDynamo(team_id, updatedTable, dynamodb);
 
-    // return success
+    return result;
   }
 };
 
