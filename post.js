@@ -6,6 +6,7 @@ const {
 const { validateCriteria } = require("./mainFunctions/validateCriteria");
 const { assignIndexes } = require("./mainFunctions/assignIndexes");
 const { getNewSetId } = require("./getNewSetId");
+const { wrapArray } = require('./wrapArray');
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -26,7 +27,7 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const postOurtLT = async (file, tableName, dynamodb, title) => {
+const postOurtLT = async (file, tableName, dynamodb, title, owner) => {
   const questionsArray = await csvToJson(file);
 
   const dynamoTable = await getDynamoTable(tableName, dynamodb);
@@ -46,11 +47,14 @@ const postOurtLT = async (file, tableName, dynamodb, title) => {
 
     const newSetId = await getNewSetId(dynamoTable);
 
-    // const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
+    const wrappedArray = await wrapArray(newSetId, owner, title, structuredQuestions);
+
+    console.log(wrappedArray)
     // // add new object to question sets
     // const success = await addToDynamo(team_id, wrappedArray);
   }
 };
 
+const ownerTest = "google_10940940941049"
 const newTitle = "newTitle";
-postOurtLT(csvFile, tableName, dynamodb, newTitle);
+postOurtLT(csvFile, tableName, dynamodb, newTitle, ownerTest);
