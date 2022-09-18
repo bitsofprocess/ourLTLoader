@@ -11,7 +11,6 @@ const { addToExistingTable } = require('./mainFunctions/addToExistingTable');
 const { addToDynamo } = require('./mainFunctions/addToDynamo');
 
 const csvFile = process.argv[2];
-const tableName = "ourLT-prod";
 const myCredentials = {
   accessKeyId: process.argv[3],
   secretAccessKey: process.argv[4],
@@ -58,6 +57,7 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
   }
 };
 
+// test data
 const ownerTest = "google_10940940941049"
 const newTitle = "test title";
 const myTeamId = 'FIEO'
