@@ -7,6 +7,7 @@ const { validateCriteria } = require("./mainFunctions/validateCriteria");
 const { assignIndexes } = require("./mainFunctions/assignIndexes");
 const { getNewSetId } = require("./getNewSetId");
 const { wrapQuestionSet } = require('./wrapQuestionSet');
+const { addToExistingTable } = require('./addToExistingTable');
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -49,14 +50,8 @@ const postOurtLT = async (file, tableName, dynamodb, title, owner) => {
 
     const wrappedQuestionSet = await wrapQuestionSet(newSetId, owner, title, structuredQuestions);
 
-
-    dynamoTable[0].question_sets.push(wrappedQuestionSet);
-
-    console.log(dynamoTable)
-    // const updatedTable = addToExistingTable(wrappedArray, dynamoTable);
-
+    const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable);
   
-    // // add new object to question sets
     // const success = await addToDynamo(team_id, wrappedArray);
   }
 };
