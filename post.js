@@ -4,7 +4,8 @@ const {
   getValidationDetails,
 } = require("./mainFunctions/getValidationDetails");
 const { validateCriteria } = require("./mainFunctions/validateCriteria");
-const { assignIndexes } = require('./mainFunctions/assignIndexes');
+const { assignIndexes } = require("./mainFunctions/assignIndexes");
+const { getNewSetId } = require("./getNewSetId");
 
 const csvFile = process.argv[2];
 const tableName = "ourLT-prod";
@@ -41,12 +42,10 @@ const postOurtLT = async (file, tableName, dynamodb, title) => {
   if (!allCriteriaValid) {
     console.log("CSV failed Validation: ", validationCriteriaObject);
   } else {
-  
     const structuredQuestions = await assignIndexes(questionsArray);
 
-    // const questionArray = await createQuestionArray(structuredQuestions);
-    // // pull in current data
-    // const newSetId = await getNewSetId(team_id); // get existing questions sets and add 1 to highest set id
+    const newSetId = await getNewSetId(dynamoTable);
+
     // const wrappedArray = await wrapArray(newSetId, owner, title, questionArray);
     // // add new object to question sets
     // const success = await addToDynamo(team_id, wrappedArray);
