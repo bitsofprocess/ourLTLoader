@@ -53,6 +53,7 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
    
     const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable);
     
+  
     // let params = {
     //   RequestItems: {
     //     'ourLT-prod': [
@@ -79,7 +80,7 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
 
     const result = await addToDynamo(team_id, updatedTable, dynamodb);
 
-    return result;
+    // return result;
   }
 };
 
