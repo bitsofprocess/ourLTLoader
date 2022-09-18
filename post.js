@@ -28,7 +28,7 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const postOurtLT = async (file, tableName, dynamodb, title, owner) => {
+const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
   const questionsArray = await csvToJson(file);
 
   const dynamoTable = await getDynamoTable(tableName, dynamodb);
@@ -50,20 +50,16 @@ const postOurtLT = async (file, tableName, dynamodb, title, owner) => {
 
     const wrappedQuestionSet = await wrapQuestionSet(newSetId, owner, title, structuredQuestions);
 
-    const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable)
+    // const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable)
     
-    // https://stackoverflow.com/questions/60695821/dynamodb-exception-supplied-attributevalue-has-more-than-one-datatypes-set
-
-    // console.log(JSON.stringify(params))
-
     let params = {
       RequestItems: {
         'ourLT-prod': [
           {
             PutRequest: {
              Item: {
-              team_id: 'FIEO',
-              question_sets: 'test'
+              team_id: team_id,
+              question_sets: wrappedQuestionSet
              }
             }
           }
@@ -75,7 +71,7 @@ const postOurtLT = async (file, tableName, dynamodb, title, owner) => {
     try {
       res = await dynamodb.batchWrite(params).promise()
       let data = res;
-      console.log('Processed: ', JSON.stringify(updatedTable, null, 3))
+      console.log('Processed: ', JSON.stringify(wrappedQuestionSet, null, 3))
     } catch(err) {
       console.log(err)
     }
@@ -86,4 +82,5 @@ const postOurtLT = async (file, tableName, dynamodb, title, owner) => {
 
 const ownerTest = "google_10940940941049"
 const newTitle = "newTitle";
-postOurtLT(csvFile, tableName, dynamodb, newTitle, ownerTest);
+const myTeamId = 'FIEO'
+postOurtLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
