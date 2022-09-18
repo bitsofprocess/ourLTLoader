@@ -1,7 +1,7 @@
 module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable) => {
     
-    const newTable = dynamoTable;
-    newTable[0].question_sets.push(wrappedQuestionSet);
+    const newTable = dynamoTable[0];
+    newTable.question_sets.push(wrappedQuestionSet);
 
     return newTable;
 }

@@ -50,7 +50,8 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
 
     const wrappedQuestionSet = await wrapQuestionSet(newSetId, owner, title, structuredQuestions);
 
-    // const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable)
+   
+    const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable);
     
     let params = {
       RequestItems: {
@@ -59,7 +60,7 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
             PutRequest: {
              Item: {
               team_id: team_id,
-              question_sets: wrappedQuestionSet
+              question_sets: updatedTable
              }
             }
           }
@@ -77,6 +78,8 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
     }
 
     // const success = await addToDynamo(team_id, wrappedArray);
+
+    // return success
   }
 };
 
