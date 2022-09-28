@@ -6,9 +6,9 @@ const {
 const { validateCriteria } = require("./mainFunctions/validateCriteria");
 const { assignIndexes } = require("./mainFunctions/assignIndexes");
 const { getNewSetId } = require("./mainFunctions/getNewSetId");
-const { wrapQuestionSet } = require('./mainFunctions/wrapQuestionSet');
-const { addToExistingTable } = require('./mainFunctions/addToExistingTable');
-const { addToDynamo } = require('./mainFunctions/addToDynamo');
+const { wrapQuestionSet } = require("./mainFunctions/wrapQuestionSet");
+const { addToExistingTable } = require("./mainFunctions/addToExistingTable");
+const { addToDynamo } = require("./mainFunctions/addToDynamo");
 
 const csvFile = process.argv[2];
 const myCredentials = {
@@ -29,36 +29,48 @@ AWS.config = new AWS.Config({
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
-  const questionsArray = await csvToJson(file);
+  try {
+    const questionsArray = await csvToJson(file);
 
-  const dynamoTable = await getDynamoTable(tableName, dynamodb);
+    const dynamoTable = await getDynamoTable(dynamodb);
 
-  const validationCriteriaObject = await getValidationDetails(
-    questionsArray,
-    title,
-    dynamoTable
-  );
-
-  const allCriteriaValid = await validateCriteria(validationCriteriaObject);
-
-  if (!allCriteriaValid) {
-    console.log("CSV failed Validation: ", validationCriteriaObject);
-  } else {
-    const structuredQuestions = await assignIndexes(questionsArray);
-
-    const newSetId = await getNewSetId(dynamoTable);
-
-    const wrappedQuestionSet = await wrapQuestionSet(newSetId, owner, title, structuredQuestions);
-   
-    const updatedTable = await addToExistingTable(wrappedQuestionSet, dynamoTable);
+    const validationCriteriaObject = await getValidationDetails(
+      questionsArray,
+      title,
+      dynamoTable
+    );
     
-    const result = await addToDynamo(team_id, updatedTable, dynamodb);
+    const allCriteriaValid = await validateCriteria(validationCriteriaObject);
+    
+    if (!allCriteriaValid) {
+      console.log("CSV failed Validation: ", validationCriteriaObject);
+    } else {
+      const structuredQuestions = await assignIndexes(questionsArray);
 
+      const newSetId = await getNewSetId(dynamoTable);
+
+      const wrappedQuestionSet = await wrapQuestionSet(
+        newSetId,
+        owner,
+        title,
+        structuredQuestions
+      );
+
+      const updatedTable = await addToExistingTable(
+        wrappedQuestionSet,
+        dynamoTable
+      );
+
+      const result = await addToDynamo(team_id, updatedTable, dynamodb);
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error(err); 
   }
 };
 
 // test data
-const ownerTest = "google_10940940941049"
-const newTitle = "test title";
-const myTeamId = 'FIEO'
+const ownerTest = "google_10940940941049";
+const newTitle = "jhgjg";
+const myTeamId = "FIEO";
 postOurtLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);

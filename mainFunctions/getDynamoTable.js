@@ -1,23 +1,23 @@
 // Load the AWS SDK for Node.js
 const AWS = require("aws-sdk");
 
-module.exports.getDynamoTable = async (tableName, dynamodb) => {
+module.exports.getDynamoTable = async (dynamodb) => 
+{
 
-    let ddbData
-    var params = {
-        TableName: tableName
+  var params = {
+      TableName: "ourLT-prod"
+  }
+
+  try {
+      const data = await dynamodb.scan(params).promise();
+      return data.Items;
+      
     }
-
-    try {
-        let data = await dynamodb.scan(params).promise().then(response => {
-            ddbData = response.Items
-        });
-        
-      }
-    catch (err) {
-      console.log(err);
-    } 
-   return ddbData
-
-  };
-
+  catch (error) {
+    return {
+      statusCode: 400,
+      error: `Could not fetch: ${error.stack}`
+    };
+  } 
+ 
+};

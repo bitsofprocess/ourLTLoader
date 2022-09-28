@@ -10,13 +10,13 @@ module.exports.checkAllValues = async (questionsArray) => {
     const valuesArray = Object.values(element);
 
     if (valuesArray.includes("")) {
-      valueCheck.push("false");
+      valueCheck.push(false);
     } else {
-      valueCheck.push("true");
+      valueCheck.push(true);
     }
   });
 
-  if (valueCheck.includes("false")) {
+  if (valueCheck.includes(false)) {
     passedValueCheck = false;
   } else {
     passedValueCheck = true;
