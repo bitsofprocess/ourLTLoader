@@ -1,9 +1,10 @@
 const { csvToJson } = require("./modules/csvToJson");
-const { getDynamoTable, addToDynamo } = require("./modules/awsFunctions");
-const {
-  getValidationDetails,
-} = require("./mainFunctions/getValidationDetails");
-const { validateCriteria } = require("./mainFunctions/validateCriteria");
+const { getDynamoTable, addToDynamo } = require("./modules/aws");
+const { getValidationDetails, validateCriteria } = require('./modules/validation');
+// const {
+//   getValidationDetails,
+// } = require("./mainFunctions/getValidationDetails");
+// const { validateCriteria } = require("./mainFunctions/validateCriteria");
 const { assignIndexes } = require("./mainFunctions/assignIndexes");
 const { getNewSetId } = require("./mainFunctions/getNewSetId");
 const { wrapQuestionSet } = require("./mainFunctions/wrapQuestionSet");
@@ -39,10 +40,8 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
       dynamoTable
     );
 
-    console.log(validationCriteriaObject);
-    
     const allCriteriaValid = await validateCriteria(validationCriteriaObject);
-    
+
     if (!allCriteriaValid) {
       console.log("CSV failed Validation: ", validationCriteriaObject);
     } else {
@@ -66,12 +65,13 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
     }
   } catch (err) {
     console.error(err);
-    throw new Error(err); 
+    throw new Error(err);
   }
 };
 
 // test data
 const ownerTest = "google_10940940941049";
-const newTitle = "hjkhjkh";
+const newTitle = "a new title";
 const myTeamId = "FIEO";
+
 postOurtLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);

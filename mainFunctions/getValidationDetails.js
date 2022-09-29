@@ -1,9 +1,4 @@
-// const { maxLengthCheck } = require("../subFunctions/maxLengthCheck");
-// const { checkAllValues } = require("../subFunctions/checkAllValues");
-// const { checkForSpecialChar } = require("../subFunctions/checkForSpecialChar");
-// const { compareTitles } = require("../subFunctions/compareTitles");
-
-const { maxLengthCheck, checkAllValues, checkForSpecialChar, compareTitles } = require('../modules/validationFunctions');
+const { maxLengthCheck, checkAllValues, checkForSpecialChar, compareTitles } = require('../modules/validation');
 
 const { csvToJson } = require("../modules/csvToJson");
 

@@ -1,7 +1,5 @@
 const { csvToJson } = require("./csvToJson");
 
-
-
 module.exports.checkAllValues = async (questionsArray) => {
   
   let valueCheck = [];
@@ -118,3 +116,41 @@ module.exports.compareTitles = async (dynamoTable, title) => {
     return titleCheckPassed;
   };
   
+  module.exports.validateCriteria = async (validationCriteriaObject) => {
+    let csvPassesValidation;
+    const validationArray = Object.values(validationCriteriaObject);
+  
+    if (validationArray.includes(false)) {
+      csvPassesValidation = false;
+    } else {
+      csvPassesValidation = true;
+    }
+
+    return csvPassesValidation;
+}
+
+module.exports.getValidationDetails = async (questionsArray, title, dynamoTable) => {
+
+  let passesCharCheck;
+  let allValuesPresent;
+  let passesLengthCheck;
+  let passesTitleCheck;
+  let validationCriteria = {
+    passesCharCheck,
+    allValuesPresent,
+    passesLengthCheck,
+    passesTitleCheck,
+  };
+
+  validationCriteria.passesCharCheck = await exports.checkForSpecialChar(
+    questionsArray
+  );
+
+  validationCriteria.allValuesPresent = await exports.checkAllValues(questionsArray);
+
+  validationCriteria.passesLengthCheck = await exports.maxLengthCheck(questionsArray);
+
+  validationCriteria.passesTitleCheck = await exports.compareTitles(dynamoTable, title);
+
+  return validationCriteria;
+};
