@@ -1,14 +1,7 @@
 const { csvToJson } = require("./modules/csvToJson");
 const { getDynamoTable, addToDynamo } = require("./modules/aws");
 const { getValidationDetails, validateCriteria } = require('./modules/validation');
-// const {
-//   getValidationDetails,
-// } = require("./mainFunctions/getValidationDetails");
-// const { validateCriteria } = require("./mainFunctions/validateCriteria");
-const { assignIndexes } = require("./mainFunctions/assignIndexes");
-const { getNewSetId } = require("./mainFunctions/getNewSetId");
-const { wrapQuestionSet } = require("./mainFunctions/wrapQuestionSet");
-const { addToExistingTable } = require("./mainFunctions/addToExistingTable");
+const { assignIndexes, getNewSetId, wrapQuestionSet, addToExistingTable } = require('./modules/format');
 
 const csvFile = process.argv[2];
 const myCredentials = {
@@ -71,7 +64,7 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
 
 // test data
 const ownerTest = "google_10940940941049";
-const newTitle = "a new title";
+const newTitle = "another new title";
 const myTeamId = "FIEO";
 
 postOurtLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
