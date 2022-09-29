@@ -1,5 +1,5 @@
-const { csvToJson } = require("./subFunctions/csvToJson");
-const { getDynamoTable } = require("./mainFunctions/getDynamoTable");
+const { csvToJson } = require("./modules/csvToJson");
+const { getDynamoTable, addToDynamo } = require("./modules/awsFunctions");
 const {
   getValidationDetails,
 } = require("./mainFunctions/getValidationDetails");
@@ -8,7 +8,6 @@ const { assignIndexes } = require("./mainFunctions/assignIndexes");
 const { getNewSetId } = require("./mainFunctions/getNewSetId");
 const { wrapQuestionSet } = require("./mainFunctions/wrapQuestionSet");
 const { addToExistingTable } = require("./mainFunctions/addToExistingTable");
-const { addToDynamo } = require("./mainFunctions/addToDynamo");
 
 const csvFile = process.argv[2];
 const myCredentials = {
@@ -42,29 +41,29 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
 
     console.log(validationCriteriaObject);
     
-    // const allCriteriaValid = await validateCriteria(validationCriteriaObject);
+    const allCriteriaValid = await validateCriteria(validationCriteriaObject);
     
-    // if (!allCriteriaValid) {
-    //   console.log("CSV failed Validation: ", validationCriteriaObject);
-    // } else {
-    //   const structuredQuestions = await assignIndexes(questionsArray);
+    if (!allCriteriaValid) {
+      console.log("CSV failed Validation: ", validationCriteriaObject);
+    } else {
+      const structuredQuestions = await assignIndexes(questionsArray);
 
-    //   const newSetId = await getNewSetId(dynamoTable);
+      const newSetId = await getNewSetId(dynamoTable);
 
-    //   const wrappedQuestionSet = await wrapQuestionSet(
-    //     newSetId,
-    //     owner,
-    //     title,
-    //     structuredQuestions
-    //   );
+      const wrappedQuestionSet = await wrapQuestionSet(
+        newSetId,
+        owner,
+        title,
+        structuredQuestions
+      );
 
-    //   const updatedTable = await addToExistingTable(
-    //     wrappedQuestionSet,
-    //     dynamoTable
-    //   );
+      const updatedTable = await addToExistingTable(
+        wrappedQuestionSet,
+        dynamoTable
+      );
 
-    //   const result = await addToDynamo(team_id, updatedTable, dynamodb);
-    // }
+      const result = await addToDynamo(team_id, updatedTable, dynamodb);
+    }
   } catch (err) {
     console.error(err);
     throw new Error(err); 

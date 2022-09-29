@@ -3,9 +3,9 @@
 // const { checkForSpecialChar } = require("../subFunctions/checkForSpecialChar");
 // const { compareTitles } = require("../subFunctions/compareTitles");
 
-const { maxLengthCheck, checkAllValues, checkForSpecialChar, compareTitles } = require('../subFunctions/validationFunctions');
+const { maxLengthCheck, checkAllValues, checkForSpecialChar, compareTitles } = require('../modules/validationFunctions');
 
-const { csvToJson } = require("../subFunctions/csvToJson");
+const { csvToJson } = require("../modules/csvToJson");
 
 const csvFile = process.argv[2];
 
