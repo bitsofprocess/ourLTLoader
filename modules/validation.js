@@ -1,7 +1,6 @@
 const { csvToJson } = require("./csvToJson");
 
 module.exports.checkAllValues = async (questionsArray) => {
-  
   let valueCheck = [];
   let passedValueCheck;
 
@@ -24,113 +23,110 @@ module.exports.checkAllValues = async (questionsArray) => {
   return passedValueCheck;
 };
 
-
 module.exports.maxLengthCheck = async (questionsArray) => {
-    const lengthCheck = [];
-    let passesLengthCheck;
-  
-    questionsArray.forEach((element) => {
-      for (key in element) {
-        if (element[key].length < 200) {
-          lengthCheck.push(true);
-        } else {
-          lengthCheck.push(false);
-        }
-      }
-    });
-  
-    if (lengthCheck.includes(false)) {
-      passesLengthCheck = false;
-    } else {
-      passesLengthCheck = true;
-    }
-    return passesLengthCheck;
-  };
+  const lengthCheck = [];
+  let passesLengthCheck;
 
-  module.exports.questionFreeOfSpecialChar = async (str) => {
-    const specialChars = /[^`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/~]/;
-    return specialChars.test(str);
+  questionsArray.forEach((element) => {
+    for (key in element) {
+      if (element[key].length < 200) {
+        lengthCheck.push(true);
+      } else {
+        lengthCheck.push(false);
+      }
+    }
+  });
+
+  if (lengthCheck.includes(false)) {
+    passesLengthCheck = false;
+  } else {
+    passesLengthCheck = true;
   }
-  
-  module.exports.answerFreeOfSpecialChar = async (str) => {
+  return passesLengthCheck;
+};
+
+module.exports.questionFreeOfSpecialChar = async (str) => {
+  const specialChars = /[^`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/~]/;
+  return specialChars.test(str);
+};
+
+module.exports.answerFreeOfSpecialChar = async (str) => {
   const specialChars = /[^`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   return specialChars.test(str);
-  }
+};
 
-  module.exports.checkForSpecialChar = async (questionsArray) => {
-    
-    const requiredKeys = [
-        "question",
-        "correct_answer",
-        "wrong_answer_1",
-        "wrong_answer_2",
-        "wrong_answer_3",
-      ];
-    
-      let validationArray = [];
-      let passedValidation;
-    
-    
-      questionsArray.forEach((element) => {
-        for (const key of requiredKeys) {
-          if (key === "question") {
-            let result = exports.questionFreeOfSpecialChar(element[key]);
-            validationArray.push(result);
+module.exports.checkForSpecialChar = async (questionsArray) => {
+  const requiredKeys = [
+    "question",
+    "correct_answer",
+    "wrong_answer_1",
+    "wrong_answer_2",
+    "wrong_answer_3",
+  ];
 
-          } else if (
-            key === "wrong_answer_1" ||
-            "wrong_answer_2" ||
-            "wrong_answer_3"
-          ) {
-            let result = exports.answerFreeOfSpecialChar(element[key]);
-            validationArray.push(result);
-          }
-        }
-      });
-    
-      if (validationArray.includes(false)) {
-        passedValidation = false;
-      } else {
-        passedValidation = true;
+  let validationArray = [];
+  let passedValidation;
+
+  questionsArray.forEach((element) => {
+    for (const key of requiredKeys) {
+      if (key === "question") {
+        let result = exports.questionFreeOfSpecialChar(element[key]);
+        validationArray.push(result);
+      } else if (
+        key === "wrong_answer_1" ||
+        "wrong_answer_2" ||
+        "wrong_answer_3"
+      ) {
+        let result = exports.answerFreeOfSpecialChar(element[key]);
+        validationArray.push(result);
       }
-      return passedValidation
-    
-}
+    }
+  });
+
+  if (validationArray.includes(false)) {
+    passedValidation = false;
+  } else {
+    passedValidation = true;
+  }
+  return passedValidation;
+};
 
 module.exports.compareTitles = async (dynamoTable, title) => {
+  const titleArray = [];
+  const questionSetArray = dynamoTable[0].question_sets;
+  let titleCheckPassed;
 
-    const titleArray = [];
-    const questionSetArray = dynamoTable[0].question_sets;
-    let titleCheckPassed;
-  
-    for (element of questionSetArray) {
-      titleArray.push(element.title);
-    }
-  
-    if (titleArray.includes(title)) {
-      titleCheckPassed = false;
-    } else {
-      titleCheckPassed = true;
-    }
-  
-    return titleCheckPassed;
-  };
-  
-  module.exports.validateCriteria = async (validationCriteriaObject) => {
-    let csvPassesValidation;
-    const validationArray = Object.values(validationCriteriaObject);
-  
-    if (validationArray.includes(false)) {
-      csvPassesValidation = false;
-    } else {
-      csvPassesValidation = true;
-    }
+  for (element of questionSetArray) {
+    titleArray.push(element.title);
+  }
 
-    return csvPassesValidation;
-}
+  if (titleArray.includes(title)) {
+    titleCheckPassed = false;
+  } else {
+    titleCheckPassed = true;
+  }
 
-module.exports.getValidationDetails = async (questionsArray, title, dynamoTable) => {
+  return titleCheckPassed;
+};
 
+module.exports.validateCriteria = async (validationCriteriaObject) => {
+  let csvPassesValidation;
+  const validationArray = Object.values(validationCriteriaObject);
+
+  if (validationArray.includes(false)) {
+    csvPassesValidation = false;
+  } else {
+    csvPassesValidation = true;
+  }
+
+  return csvPassesValidation;
+};
+
+module.exports.getValidationDetails = async (
+  questionsArray,
+  title,
+  dynamoTable
+) => {
   let passesCharCheck;
   let allValuesPresent;
   let passesLengthCheck;
@@ -146,11 +142,18 @@ module.exports.getValidationDetails = async (questionsArray, title, dynamoTable)
     questionsArray
   );
 
-  validationCriteria.allValuesPresent = await exports.checkAllValues(questionsArray);
+  validationCriteria.allValuesPresent = await exports.checkAllValues(
+    questionsArray
+  );
 
-  validationCriteria.passesLengthCheck = await exports.maxLengthCheck(questionsArray);
+  validationCriteria.passesLengthCheck = await exports.maxLengthCheck(
+    questionsArray
+  );
 
-  validationCriteria.passesTitleCheck = await exports.compareTitles(dynamoTable, title);
+  validationCriteria.passesTitleCheck = await exports.compareTitles(
+    dynamoTable,
+    title
+  );
 
   return validationCriteria;
 };
