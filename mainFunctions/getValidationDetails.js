@@ -1,7 +1,9 @@
-const { maxLengthCheck } = require("../subFunctions/maxLengthCheck");
-const { checkAllValues } = require("../subFunctions/checkAllValues");
-const { checkForSpecialChar } = require("../subFunctions/checkForSpecialChar");
-const { compareTitles } = require("../subFunctions/compareTitles");
+// const { maxLengthCheck } = require("../subFunctions/maxLengthCheck");
+// const { checkAllValues } = require("../subFunctions/checkAllValues");
+// const { checkForSpecialChar } = require("../subFunctions/checkForSpecialChar");
+// const { compareTitles } = require("../subFunctions/compareTitles");
+
+const { maxLengthCheck, checkAllValues, checkForSpecialChar, compareTitles } = require('../subFunctions/validationFunctions');
 
 const { csvToJson } = require("../subFunctions/csvToJson");
 

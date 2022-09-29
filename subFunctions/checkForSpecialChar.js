@@ -3,9 +3,7 @@ const { csvToJson } = require("./csvToJson");
 const {
     questionFreeOfSpecialChar,
     answerFreeOfSpecialChar,
-  } = require("./specialCharCheck");
-  
-const csvFile = process.argv[2]
+  } = require('../subFunctions/specialCharCheck');
 
 module.exports.checkForSpecialChar = async (questionsArray) => {
     

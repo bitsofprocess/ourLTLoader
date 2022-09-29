@@ -39,30 +39,32 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
       title,
       dynamoTable
     );
+
+    console.log(validationCriteriaObject);
     
-    const allCriteriaValid = await validateCriteria(validationCriteriaObject);
+    // const allCriteriaValid = await validateCriteria(validationCriteriaObject);
     
-    if (!allCriteriaValid) {
-      console.log("CSV failed Validation: ", validationCriteriaObject);
-    } else {
-      const structuredQuestions = await assignIndexes(questionsArray);
+    // if (!allCriteriaValid) {
+    //   console.log("CSV failed Validation: ", validationCriteriaObject);
+    // } else {
+    //   const structuredQuestions = await assignIndexes(questionsArray);
 
-      const newSetId = await getNewSetId(dynamoTable);
+    //   const newSetId = await getNewSetId(dynamoTable);
 
-      const wrappedQuestionSet = await wrapQuestionSet(
-        newSetId,
-        owner,
-        title,
-        structuredQuestions
-      );
+    //   const wrappedQuestionSet = await wrapQuestionSet(
+    //     newSetId,
+    //     owner,
+    //     title,
+    //     structuredQuestions
+    //   );
 
-      const updatedTable = await addToExistingTable(
-        wrappedQuestionSet,
-        dynamoTable
-      );
+    //   const updatedTable = await addToExistingTable(
+    //     wrappedQuestionSet,
+    //     dynamoTable
+    //   );
 
-      const result = await addToDynamo(team_id, updatedTable, dynamodb);
-    }
+    //   const result = await addToDynamo(team_id, updatedTable, dynamodb);
+    // }
   } catch (err) {
     console.error(err);
     throw new Error(err); 
@@ -71,6 +73,6 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
 
 // test data
 const ownerTest = "google_10940940941049";
-const newTitle = "jhgjg";
+const newTitle = "hjkhjkh";
 const myTeamId = "FIEO";
 postOurtLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
