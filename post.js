@@ -1,7 +1,6 @@
-const { csvToJson } = require("./modules/csvToJson");
 const { getDynamoTable, addToDynamo } = require("./modules/aws");
 const { getValidationDetails, validateCriteria } = require('./modules/validation');
-const { assignIndexes, getNewSetId, wrapQuestionSet, addToExistingTable } = require('./modules/format');
+const { csvToJson, assignIndexes, getNewSetId, wrapQuestionSet, addToExistingTable } = require('./modules/format');
 
 const csvFile = process.argv[2];
 const myCredentials = {
