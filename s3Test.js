@@ -1,10 +1,10 @@
-const fastCsv = require('@fast-csv/parse');
-const csv = require('csvtojson');
+// const fastCsv = require('@fast-csv/parse');
+const csv = require("csvtojson");
 
 const AWS = require("aws-sdk");
 var s3 = new AWS.S3();
 
-async function getCsvFromS3() {
+module.exports.getCsvFromS3 = async () => {
 
     const params = {
         Bucket: 'boptestfiles',
@@ -14,7 +14,7 @@ async function getCsvFromS3() {
     const stream = s3.getObject(params).createReadStream();
     // convert csv file (stream) to JSON format data
     const json = await csv().fromStream(stream);
-    console.log(json);
+    return json;
   };
 
-getCsvFromS3();
+

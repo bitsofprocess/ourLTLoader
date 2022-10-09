@@ -1,5 +1,3 @@
-const { csvToJson } = require("./csvToJson");
-
 module.exports.checkAllValues = async (questionsArray) => {
   let valueCheck = [];
   let passedValueCheck;
