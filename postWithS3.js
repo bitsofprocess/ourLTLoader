@@ -30,42 +30,43 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
+const postOurLT = async (file, dynamodb, title, owner, team_id) => {
   try {
     const questionsArray = await getCsvFromS3();
 
-    console.log(questionsArray)
-    // const dynamoTable = await getDynamoTable(dynamodb);
+    const dynamoTable = await getDynamoTable(dynamodb);
 
-    // const validationCriteriaObject = await getValidationDetails(
-    //   questionsArray,
-    //   title,
-    //   dynamoTable
-    // );
+    const validationCriteriaObject = await getValidationDetails(
+      questionsArray,
+      title,
+      dynamoTable
+    );
 
-    // const allCriteriaValid = await validateCriteria(validationCriteriaObject);
+    const allCriteriaValid = await validateCriteria(validationCriteriaObject);
 
-    // if (!allCriteriaValid) {
-    //   console.log("CSV failed Validation: ", validationCriteriaObject);
-    // } else {
-    //   const structuredQuestions = await assignIndexes(questionsArray);
+    if (!allCriteriaValid) {
+      console.log("CSV failed Validation: ", validationCriteriaObject);
+    } else {
+      const structuredQuestions = await assignIndexes(questionsArray);
 
-    //   const newSetId = await getNewSetId(dynamoTable);
+      const newSetId = await getNewSetId(dynamoTable);
 
-    //   const wrappedQuestionSet = await wrapQuestionSet(
-    //     newSetId,
-    //     owner,
-    //     title,
-    //     structuredQuestions
-    //   );
+      const wrappedQuestionSet = await wrapQuestionSet(
+        newSetId,
+        owner,
+        title,
+        structuredQuestions
+      );
 
-    //   const updatedTable = await addToExistingTable(
-    //     wrappedQuestionSet,
-    //     dynamoTable
-    //   );
+      const updatedTable = await addToExistingTable(
+        wrappedQuestionSet,
+        dynamoTable
+      );
 
-    //   const result = await addToDynamo(team_id, updatedTable, dynamodb);
-    // }
+      const result = await addToDynamo(team_id, updatedTable, dynamodb);
+
+      return result;
+    }
   } catch (err) {
     console.error(err);
     throw new Error(err);
@@ -73,8 +74,8 @@ const postOurtLT = async (file, dynamodb, title, owner, team_id) => {
 };
 
 // test data
-const ownerTest = "google_10940940941049";
-const newTitle = "another new title";
-const myTeamId = "FIEO";
+// const ownerTest = "google_10940940941049";
+// const newTitle = "another new title";
+// const myTeamId = "FIEO";
 
-postOurtLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
+// postOurLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);

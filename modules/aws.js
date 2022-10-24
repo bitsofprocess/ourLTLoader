@@ -36,7 +36,7 @@ module.exports.addToDynamo = async (team_id, updatedTable, dynamodb) => {
   try {
     res = await dynamodb.batchWrite(params).promise();
     let data = res;
-    console.log("Processed: ", JSON.stringify(params, null, 3));
+    console.log("Processed: ", `${JSON.stringify(params, null, 3)}`);
   } catch (err) {
     console.log(err);
   }
