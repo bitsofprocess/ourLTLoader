@@ -159,3 +159,14 @@ module.exports.getValidationDetails = async (
 
   return validationCriteria;
 };
+
+module.exports.checkTableForTeamId = async (dynamoTable, team_id) => {
+  let currentTeamIds = [];
+  dynamoTable.forEach(team => currentTeamIds.push(team.team_id));
+  if (!currentTeamIds.includes(team_id)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
