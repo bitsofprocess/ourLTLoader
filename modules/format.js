@@ -52,7 +52,7 @@ module.exports.getNewSetId = async (dynamoTable, team_id) => {
 			questionSets.forEach((set) => existingSetIds.push(set.set_id));
 
 			newSetId = Math.max(...existingSetIds) + 1;
-		}
+		} 
 	});
 
 	return newSetId;
@@ -74,9 +74,15 @@ module.exports.wrapQuestionSet = async (
 	return obj;
 };
 
-module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable) => {
-	const newTable = dynamoTable[0];
-	newTable.question_sets.push(wrappedQuestionSet);
+module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team_id) => {
+	const newTable = dynamoTable;
+  newTable.forEach(teamSet => {
+    if (teamSet.team_id === team_id) {
+      teamSet.question_sets.push(wrappedQuestionSet)
+    } 
+  })
+  return newTable;
+	// newTable.question_sets.push(wrappedQuestionSet);
 
-	return newTable.question_sets;
+	// return newTable.question_sets;
 };
