@@ -36,37 +36,40 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
 
     const dynamoTable = await getDynamoTable(dynamodb);
 
-    const validationCriteriaObject = await getValidationDetails(
-      questionsArray,
-      title,
-      dynamoTable
-    );
 
-    const allCriteriaValid = await validateCriteria(validationCriteriaObject);
+    // const validationCriteriaObject = await getValidationDetails(
+    //   questionsArray,
+    //   title,
+    //   dynamoTable
+    // );
 
-    if (!allCriteriaValid) {
-      console.log("CSV failed Validation: ", validationCriteriaObject);
-    } else {
-      const structuredQuestions = await assignIndexes(questionsArray);
+    // const allCriteriaValid = await validateCriteria(validationCriteriaObject);
 
-      const newSetId = await getNewSetId(dynamoTable);
+  
 
-      const wrappedQuestionSet = await wrapQuestionSet(
-        newSetId,
-        owner,
-        title,
-        structuredQuestions
-      );
+    // if (!allCriteriaValid) {
+    //   console.log("CSV failed Validation: ", validationCriteriaObject);
+    // } else {
+    //   const structuredQuestions = await assignIndexes(questionsArray);
 
-      const updatedTable = await addToExistingTable(
-        wrappedQuestionSet,
-        dynamoTable
-      );
+    //   const newSetId = await getNewSetId(dynamoTable);
 
-      const result = await addToDynamo(team_id, updatedTable, dynamodb);
+    //   const wrappedQuestionSet = await wrapQuestionSet(
+    //     newSetId,
+    //     owner,
+    //     title,
+    //     structuredQuestions
+    //   );
 
-      return result;
-    }
+    //   const updatedTable = await addToExistingTable(
+    //     wrappedQuestionSet,
+    //     dynamoTable
+    //   );
+
+    //   const result = await addToDynamo(team_id, updatedTable, dynamodb);
+
+    //   return result;
+    // }
   } catch (err) {
     console.error(err);
     throw new Error(err);
@@ -74,8 +77,8 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
 };
 
 // test data
-// const ownerTest = "google_10940940941049";
-// const newTitle = "another new title";
-// const myTeamId = "FIEO";
+const ownerTest = "google_10940940941049";
+const newTitle = "First Quiz";
+const myTeamId = "FIEO";
 
-// postOurLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
+postOurLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);

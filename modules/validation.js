@@ -89,14 +89,16 @@ module.exports.checkForSpecialChar = async (questionsArray) => {
   return passedValidation;
 };
 
-module.exports.compareTitles = async (dynamoTable, title) => {
-  const titleArray = [];
-  const questionSetArray = dynamoTable[0].question_sets;
+module.exports.compareTitles = async (dynamoTable, title, team_id) => {
+  let titleArray = [];
   let titleCheckPassed;
 
-  for (element of questionSetArray) {
-    titleArray.push(element.title);
-  }
+  dynamoTable.forEach(object => {
+    if (object.team_id === team_id) {
+      const questionSetArray = object.question_sets;
+      questionSetArray.forEach(set => titleArray.push(set.title));
+    }
+  })
 
   if (titleArray.includes(title)) {
     titleCheckPassed = false;
@@ -150,7 +152,8 @@ module.exports.getValidationDetails = async (
 
   validationCriteria.passesTitleCheck = await exports.compareTitles(
     dynamoTable,
-    title
+    title,
+    team_id
   );
 
   return validationCriteria;
