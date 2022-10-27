@@ -125,7 +125,8 @@ module.exports.validateCriteria = async (validationCriteriaObject) => {
 module.exports.getValidationDetails = async (
   questionsArray,
   title,
-  dynamoTable
+  dynamoTable,
+  team_id
 ) => {
   let passesCharCheck;
   let allValuesPresent;
