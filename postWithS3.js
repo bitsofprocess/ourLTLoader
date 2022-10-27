@@ -3,6 +3,9 @@ const {
   getValidationDetails,
   validateCriteria,
 } = require("./modules/validation");
+
+const { checkTableForTeamId } = require('./modules/validation')
+
 const {
   csvToJson,
   assignIndexes,
@@ -36,16 +39,16 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
 
     const dynamoTable = await getDynamoTable(dynamodb);
 
+    const validationCriteriaObject = await getValidationDetails(
+      questionsArray,
+      title,
+      dynamoTable,
+      team_id
+    );
 
-    // const validationCriteriaObject = await getValidationDetails(
-    //   questionsArray,
-    //   title,
-    //   dynamoTable
-    // );
-
-    // const allCriteriaValid = await validateCriteria(validationCriteriaObject);
-
-  
+    const allCriteriaValid = await validateCriteria(validationCriteriaObject);
+    
+    const teamIdExistsInDynamo = await checkTableForTeamId(dynamoTable, team_id);
 
     // if (!allCriteriaValid) {
     //   console.log("CSV failed Validation: ", validationCriteriaObject);
@@ -79,6 +82,6 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
 // test data
 const ownerTest = "google_10940940941049";
 const newTitle = "First Quiz";
-const myTeamId = "FIEO";
+const myTeamId = "QHTR";
 
 postOurLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
