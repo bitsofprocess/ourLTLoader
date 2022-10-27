@@ -82,7 +82,5 @@ module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team
     } 
   })
   return newTable;
-	// newTable.question_sets.push(wrappedQuestionSet);
 
-	// return newTable.question_sets;
 };
