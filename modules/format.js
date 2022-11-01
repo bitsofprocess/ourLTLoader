@@ -102,12 +102,15 @@ module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team
 		}
 
 		newTable.push(newTeamObj);
+
 	} else if (existingTeamIds.includes(team_id)) {
 		newTable.map(teamObj => {
 			if (teamObj.team_id === team_id) {
 				teamObj.question_sets.push(wrappedQuestionSet);
 			}
 		})
+	} else {
+		return 'addToExistingTable function error';
 	} return newTable;
 
 };
