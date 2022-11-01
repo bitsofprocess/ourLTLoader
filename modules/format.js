@@ -44,6 +44,7 @@ module.exports.assignIndexes = async (questionsArray) => {
 module.exports.getNewSetId = async (dynamoTable, team_id) => {
 	let newSetId;
 	let existingTeamIds = [];
+	let teamIdInDynamo;
 
 	dynamoTable.forEach((element) => {
 
@@ -73,6 +74,7 @@ module.exports.wrapQuestionSet = async (
 	title,
 	structuredQuestions
 ) => {
+	
 	let obj = {
 		set_id: newSetId,
 		owner: owner,
@@ -84,12 +86,28 @@ module.exports.wrapQuestionSet = async (
 };
 
 module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team_id) => {
+	
 	const newTable = dynamoTable;
-  newTable.forEach(teamObj => {
-    if (teamObj.team_id === team_id) {
-      teamObj.question_sets.push(wrappedQuestionSet)
-    } 
-  })
-  return newTable;
+
+	let existingTeamIds = [];
+	newTable.forEach(teamObj => {
+		existingTeamIds.push(teamObj.team_id);
+		
+	})
+	
+	if (!existingTeamIds.includes(team_id)) {
+		const newTeamObj = {
+			question_sets: wrappedQuestionSet,
+			team_id: team_id
+		}
+
+		newTable.push(newTeamObj);
+	} else if (existingTeamIds.includes(team_id)) {
+		newTable.map(teamObj => {
+			if (teamObj.team_id === team_id) {
+				teamObj.question_sets.push(wrappedQuestionSet);
+			}
+		})
+	} return newTable;
 
 };
