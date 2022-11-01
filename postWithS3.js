@@ -50,29 +50,30 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
     
     const teamIdExistsInDynamo = await checkTableForTeamId(dynamoTable, team_id);
 
-    // if (!allCriteriaValid) {
-    //   console.log("CSV failed Validation: ", validationCriteriaObject);
-    // } else {
-    //   const structuredQuestions = await assignIndexes(questionsArray);
+    if (!allCriteriaValid) {
+      console.log("CSV failed Validation: ", validationCriteriaObject);
+    } else {
+      const structuredQuestions = await assignIndexes(questionsArray);
 
-    //   const newSetId = await getNewSetId(dynamoTable);
+      const newSetId = await getNewSetId(dynamoTable, team_id);
 
-    //   const wrappedQuestionSet = await wrapQuestionSet(
-    //     newSetId,
-    //     owner,
-    //     title,
-    //     structuredQuestions
-    //   );
+      const wrappedQuestionSet = await wrapQuestionSet(
+		newSetId,
+        owner,
+        title,
+        structuredQuestions
+      );
 
-    //   const updatedTable = await addToExistingTable(
-    //     wrappedQuestionSet,
-    //     dynamoTable
-    //   );
+      const updatedTable = await addToExistingTable(
+        wrappedQuestionSet,
+        dynamoTable,
+        team_id
+      );
 
-    //   const result = await addToDynamo(team_id, updatedTable, dynamodb);
+      const result = await addToDynamo(team_id, updatedTable, dynamodb);
 
-    //   return result;
-    // }
+      return result;
+    }
   } catch (err) {
     console.error(err);
     throw new Error(err);
@@ -81,7 +82,7 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
 
 // test data
 const ownerTest = "google_10940940941049";
-const newTitle = "First Quiz";
-const myTeamId = "QHTR";
+const newTitle = "Brand New Quiz";
+const myTeamId = "LFKE";
 
 postOurLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
