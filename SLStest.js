@@ -54,10 +54,11 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 // };
 
 module.exports.simple = async (event, context, callback) => {
-
+  const payload = JSON.parse(event.body);
   try {
     // const result = postOurLT(file, dynamodb, title, owner, team_id);
-    console.log(payload.file);
+   
+    console.log(payload);
   
   } catch (err) {
     console.log(err);

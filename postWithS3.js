@@ -35,7 +35,7 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const postOurLT = async (file, dynamodb, title, owner, team_id) => {
   try {
-    const questionsArray = await getCsvFromS3();
+    const questionsArray = await getCsvFromS3(file);
 
     const dynamoTable = await getDynamoTable(dynamodb);
 
