@@ -3,11 +3,11 @@ const csv = require("csvtojson");
 const AWS = require("aws-sdk");
 var s3 = new AWS.S3();
 
-module.exports.getCsvFromS3 = async () => {
+module.exports.getCsvFromS3 = async (file) => {
 
     const params = {
         Bucket: 'boptestfiles',
-        Key: 'games/ourLT/test.csv',
+        Key: `games/ourLT/${file}`,
       };
     // get csv file and create stream
     const stream = s3.getObject(params).createReadStream();
