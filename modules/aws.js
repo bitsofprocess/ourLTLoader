@@ -17,7 +17,7 @@ module.exports.getDynamoTable = async (dynamodb) => {
   }
 };
 
-module.exports.addToDynamo = async (team_id, updatedTable, dynamodb) => {
+module.exports.addNewTeamToDynamo = async (team_id, wrappedQuestionSet, dynamodb) => {
   let params = {
     RequestItems: {
       "ourLT-prod": [
@@ -25,7 +25,32 @@ module.exports.addToDynamo = async (team_id, updatedTable, dynamodb) => {
           PutRequest: {
             Item: {
               team_id: team_id,
-              question_sets: updatedTable,
+              question_sets: [wrappedQuestionSet],
+            },
+          },
+        },
+      ],
+    },
+  };
+
+  try {
+    res = await dynamodb.batchWrite(params).promise();
+    let data = res;
+    console.log("Processed: ", `${JSON.stringify(params, null, 3)}`);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports.addQuestSetToExistingTeamInDynamo = async (team_id, updatedQuestionSet, dynamodb) => {
+  let params = {
+    RequestItems: {
+      "ourLT-prod": [
+        {
+          PutRequest: {
+            Item: {
+              team_id: team_id,
+              question_sets: updatedQuestionSet,
             },
           },
         },
