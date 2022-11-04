@@ -97,6 +97,7 @@ module.exports.compareTitles = async (dynamoTable, title, team_id) => {
 		dynamoTable.forEach((teamObj) => {
 			if (teamObj.team_id === team_id) {
 				const questionSetArray = teamObj.question_sets;
+ 
 				let titleArray = questionSetArray.map(
 					(questionSet) => questionSet.title
 				);
@@ -110,7 +111,7 @@ module.exports.compareTitles = async (dynamoTable, title, team_id) => {
 	}
 
 	return titleCheckPassed;
-  
+
 };
 
 module.exports.validateCriteria = async (validationCriteriaObject) => {
@@ -165,11 +166,14 @@ module.exports.getValidationDetails = async (
 };
 
 module.exports.checkTableForTeamId = async (dynamoTable, team_id) => {
-	let currentTeamIds = [];
-	dynamoTable.forEach((team) => currentTeamIds.push(team.team_id));
+	let currentTeamIds = dynamoTable.map(teamObj => teamObj.team_id)
+	let teamIdExistsInDynamo;
+	
 	if (!currentTeamIds.includes(team_id)) {
-		return false;
+		return teamIdExistsInDynamo = false;
 	} else {
-		return true;
+		return teamIdExistsInDynamo = true;
 	}
+
+	return teamIdExistsInDynamo;
 };
