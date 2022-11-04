@@ -70,9 +70,6 @@ module.exports.wrapQuestionSet = async (
 	structuredQuestions
 ) => {
 	
-	// let wrappedQuestionSet;
-
-	// if (teamIdExistsInDynamo) {
 		let wrappedQuestionSet = {
 			set_id: newSetId,
 			owner: owner,
@@ -95,41 +92,17 @@ module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team
 	
 	const newTable = dynamoTable;
 
-	//*** let existingTeamIds = newTable.map(teamObj => teamObj.team_id)
-
-	// let existingTeamIds = [];
-	// newTable.forEach(teamObj => {
-	// 	existingTeamIds.push(teamObj.team_id);
-		
-	// })
-	
-	// if (!existingTeamIds.includes(team_id)) {
-	// 	const newTeamObj = {
-	// 		question_sets: wrappedQuestionSet,
-	// 		team_id: team_id
-	// 	}
-
-	// 	newTable.push(newTeamObj);
-
-	// } else if (existingTeamIds.includes(team_id)) {
 		let updatedQuestionSet;
 
 		newTable.map(teamObj => {
 			if (teamObj.team_id === team_id) {
 				updatedQuestionSet = [...teamObj.question_sets, wrappedQuestionSet]
-				// teamObj.question_sets.push(wrappedQuestionSet);
+		
 			} else {
 				'format.addToExistingTable error'
 			}
 		}) 
 
 		return updatedQuestionSet;
-	// } else {
-	// 	return 'addToExistingTable function error';
-	// } return newTable;
-	// newTable.forEach(teamObj => {
-	// 	if (teamObj.team_id === team_id) {
-	// 	  teamObj.question_sets.push(wrappedQuestionSet)
-	// 	}
-	// });
+
 };
