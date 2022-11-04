@@ -41,76 +41,95 @@ module.exports.assignIndexes = async (questionsArray) => {
 	return newJson;
 };
 
-module.exports.getNewSetId = async (dynamoTable, team_id) => {
+module.exports.getNewSetId = async (teamIdExistsInDynamo, dynamoTable, team_id) => {
 	let newSetId;
-	let existingTeamIds = [];
-	let teamIdInDynamo;
-
-	dynamoTable.forEach((element) => {
-
-		existingTeamIds.push(element.team_id);
 	
-			
-		if (existingTeamIds.includes(team_id)) {
-			let existingSetIds = [];
-			const questionSets = element.question_sets;
+	if (teamIdExistsInDynamo) {
+		dynamoTable.map(teamObj => {
+			if (teamObj.team_id === team_id) {
+				const questionSets = teamObj.question_sets;
+				let existingSetIds = questionSets.map(set => set.set_id);
 
-			questionSets.forEach((set) => existingSetIds.push(set.set_id));
+				newSetId = Math.max(...existingSetIds) + 1;
+			} 
 			
-			newSetId = Math.max(...existingSetIds) + 1;
-			
-		} else {
-			newSetId = 1
-		} 
-	});
+		})
+	} else {
+		newSetId = 1
+	}
 	
 	return newSetId;
 }
 
 
 module.exports.wrapQuestionSet = async (
+	teamIdExistsInDynamo,
 	newSetId,
 	owner,
 	title,
 	structuredQuestions
 ) => {
 	
-	let obj = {
-		set_id: newSetId,
-		owner: owner,
-		title: title,
-		questions: structuredQuestions,
-	};
+	// let wrappedQuestionSet;
 
-	return obj;
+	// if (teamIdExistsInDynamo) {
+		let wrappedQuestionSet = {
+			set_id: newSetId,
+			owner: owner,
+			title: title,
+			questions: structuredQuestions,
+		};
+	// } else {
+	// 	wrappedQuestionSet = [{
+	// 		set_id: newSetId,
+	// 		owner: owner,
+	// 		title: title,
+	// 		questions: structuredQuestions,
+	// 	}];
+	// }
+
+	return wrappedQuestionSet;
 };
 
 module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team_id) => {
 	
 	const newTable = dynamoTable;
 
-	let existingTeamIds = [];
-	newTable.forEach(teamObj => {
-		existingTeamIds.push(teamObj.team_id);
+	//*** let existingTeamIds = newTable.map(teamObj => teamObj.team_id)
+
+	// let existingTeamIds = [];
+	// newTable.forEach(teamObj => {
+	// 	existingTeamIds.push(teamObj.team_id);
 		
-	})
+	// })
 	
-	if (!existingTeamIds.includes(team_id)) {
-		const newTeamObj = {
-			question_sets: wrappedQuestionSet,
-			team_id: team_id
-		}
+	// if (!existingTeamIds.includes(team_id)) {
+	// 	const newTeamObj = {
+	// 		question_sets: wrappedQuestionSet,
+	// 		team_id: team_id
+	// 	}
 
-		newTable.push(newTeamObj);
+	// 	newTable.push(newTeamObj);
 
-	} else if (existingTeamIds.includes(team_id)) {
+	// } else if (existingTeamIds.includes(team_id)) {
+		let updatedQuestionSet;
+
 		newTable.map(teamObj => {
 			if (teamObj.team_id === team_id) {
-				teamObj.question_sets.push(wrappedQuestionSet);
+				updatedQuestionSet = [...teamObj.question_sets, wrappedQuestionSet]
+				// teamObj.question_sets.push(wrappedQuestionSet);
+			} else {
+				'format.addToExistingTable error'
 			}
-		})
-	} else {
-		return 'addToExistingTable function error';
-	} return newTable;
+		}) 
 
+		return updatedQuestionSet;
+	// } else {
+	// 	return 'addToExistingTable function error';
+	// } return newTable;
+	// newTable.forEach(teamObj => {
+	// 	if (teamObj.team_id === team_id) {
+	// 	  teamObj.question_sets.push(wrappedQuestionSet)
+	// 	}
+	// });
 };
