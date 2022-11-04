@@ -42,7 +42,7 @@ module.exports.addNewTeamToDynamo = async (team_id, wrappedQuestionSet, dynamodb
   }
 };
 
-module.exports.addQuestSetToExistingTeamInDynamo = async (team_id, updatedQuestionSet, dynamodb) => {
+module.exports.addQuestSetToExistingTeamInDynamo = async (team_id, updatedQuestionSetArray, dynamodb) => {
   let params = {
     RequestItems: {
       "ourLT-prod": [
@@ -50,7 +50,7 @@ module.exports.addQuestSetToExistingTeamInDynamo = async (team_id, updatedQuesti
           PutRequest: {
             Item: {
               team_id: team_id,
-              question_sets: updatedQuestionSet,
+              question_sets: updatedQuestionSetArray,
             },
           },
         },
