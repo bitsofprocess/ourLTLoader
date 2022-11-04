@@ -1,4 +1,4 @@
-const { getDynamoTable, addToDynamo } = require("./modules/aws");
+const { getDynamoTable, addNewTeamToDynamo, addQuestSetToExistingTeamInDynamo } = require("./modules/aws");
 const {
   getValidationDetails,
   validateCriteria,
@@ -45,9 +45,9 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
       dynamoTable,
       team_id
     );
-
+  
     const allCriteriaValid = await validateCriteria(validationCriteriaObject);
-    
+
     const teamIdExistsInDynamo = await checkTableForTeamId(dynamoTable, team_id);
 
     if (!allCriteriaValid) {
@@ -55,23 +55,30 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
     } else {
       const structuredQuestions = await assignIndexes(questionsArray);
 
-      const newSetId = await getNewSetId(dynamoTable, team_id);
-
+      const newSetId = await getNewSetId(teamIdExistsInDynamo, dynamoTable, team_id);
+     
       const wrappedQuestionSet = await wrapQuestionSet(
-		newSetId,
+		    teamIdExistsInDynamo,
+        newSetId,
         owner,
         title,
         structuredQuestions
       );
+      
 
-      const updatedTable = await addToExistingTable(
+      const updatedQuestionSetArray = await addToExistingTable(
         wrappedQuestionSet,
         dynamoTable,
         team_id
       );
 
-      const result = await addToDynamo(team_id, updatedTable, dynamodb);
-
+      let result; 
+      
+      if (teamIdExistsInDynamo) {
+        result = await addQuestSetToExistingTeamInDynamo(team_id, updatedQuestionSetArray, dynamodb);
+      } else {
+        result = await addNewTeamToDynamo(team_id, wrappedQuestionSet, dynamodb);
+      }
       return result;
     }
   } catch (err) {
@@ -82,7 +89,7 @@ const postOurLT = async (file, dynamodb, title, owner, team_id) => {
 
 // test data
 const ownerTest = "google_10940940941049";
-const newTitle = "Brand New Quiz";
-const myTeamId = "LFKE";
+const newTitle = "4th Quiz";
+const myTeamId = "TEST";
 
 postOurLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
