@@ -1,6 +1,7 @@
 "use strict";
 
-const { postOurLT } = require("./postWithS3");
+// const { postOurLT } = require("./postWithS3");
+const { postWithS3 } = require("./postWithS3");
 
 var AWS = require("aws-sdk");
 // const { DynamoDB } = require('serverless-dynamodb-client');
@@ -26,39 +27,13 @@ var AWS = require("aws-sdk");
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-
-// module.exports.simple = async (event, context, callback) => {
-//   var params = {
-//     TableName: "ourLT-prod",
-//   };
-
-//   let tableData;
-
-//   try {
-//     let dbResponse = await dynamodb
-//       .scan(params)
-//       .promise()
-//       .then((data) => tableData = JSON.stringify(data));
-  
-//   } catch (err) {
-//     console.log(err);
-//   }
-
-//   const response = {
-//     statusCode: 200,
-//     body: 'success!',
-//   };
-
-
-//   callback(null, response);
-// };
-
 module.exports.simple = async (event, context, callback) => {
-  const payload = JSON.parse(event.body);
+  const {file, title, owner, team_id} = JSON.parse(event.body);
+  let result;
+
   try {
-    // const result = postOurLT(file, dynamodb, title, owner, team_id);
    
-    console.log(payload);
+    result = postWithS3(file, dynamodb, title, owner, team_id);
   
   } catch (err) {
     console.log(err);
@@ -66,7 +41,7 @@ module.exports.simple = async (event, context, callback) => {
 
   const response = {
     statusCode: 200,
-    body: JSON.stringify(payload.file)
+    body: JSON.stringify(result)
   };
 
 
