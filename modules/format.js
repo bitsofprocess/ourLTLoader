@@ -76,14 +76,6 @@ module.exports.wrapQuestionSet = async (
 			title: title,
 			questions: structuredQuestions,
 		};
-	// } else {
-	// 	wrappedQuestionSet = [{
-	// 		set_id: newSetId,
-	// 		owner: owner,
-	// 		title: title,
-	// 		questions: structuredQuestions,
-	// 	}];
-	// }
 
 	return wrappedQuestionSet;
 };
