@@ -90,6 +90,7 @@ module.exports.checkForSpecialChar = async (questionsArray) => {
 };
 
 module.exports.compareTitles = async (dynamoTable, title, team_id) => {
+	
 	let titleCheckPassed;
 	let teamIdArray = dynamoTable.map((teamObj) => teamObj.team_id);
 
@@ -107,7 +108,7 @@ module.exports.compareTitles = async (dynamoTable, title, team_id) => {
 			}
 		});
 	} else {
-		return (titleCheckPassed = true);
+		return titleCheckPassed = true;
 	}
 
 	return titleCheckPassed;
@@ -163,17 +164,18 @@ module.exports.getValidationDetails = async (
 	);
 
 	return validationCriteria;
+
 };
 
 module.exports.checkTableForTeamId = async (dynamoTable, team_id) => {
 	let currentTeamIds = dynamoTable.map(teamObj => teamObj.team_id)
-	let teamIdExistsInDynamo;
+	// let teamIdExistsInDynamo;
 	
 	if (!currentTeamIds.includes(team_id)) {
-		return teamIdExistsInDynamo = false;
+		return false;
 	} else {
-		return teamIdExistsInDynamo = true;
+		return true;
 	}
 
-	return teamIdExistsInDynamo;
+	// return teamIdExistsInDynamo;
 };
