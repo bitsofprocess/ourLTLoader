@@ -10,10 +10,11 @@ plugins:
 
 provider:
   name: aws
+  stage: dev
   runtime: nodejs14.x
   environment:
-      tableName: ${self:custom.tableName}
-  #   DYNAMODB_TABLE: "params-${sls:stage}"
+      # tableName: ${self:custom.tableName}
+      dynamoTableName: ${self:custom.dynamoTableName}
   httpApi:
     cors: true
   iam:
@@ -35,6 +36,10 @@ provider:
               - s3:*
               - ses:*
           Resource: '*'
+
+custom:
+  currentStage: ${opt:stage, self:provider.stage}
+  dynamoTableName: ourLT-${self:custom.currentStage}
 
 package:
     individually: true
@@ -61,7 +66,7 @@ resources:
     ourLTProd:
       Type: 'AWS::DynamoDB::Table'
       Properties:
-        TableName: ourLT-prod
+        TableName: ${self:custom.dynamoTableName}
         AttributeDefinitions:
           -
             AttributeName: team_id
@@ -72,27 +77,27 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-custom:
+# custom:
 #  webpack:
 #   webpackConfig: 'webpack.config.js' # Name of webpack configuration file
 #   includeModules: false # Node modules configuration for packaging
 #   packager: 'npm' # Packager that will be used to package your external modules
 
-  tableName: x
-  dynamodb:
-    stages:
-      - dev   
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-      seed: true
-    migration: 
-      dir: offline/migrations
+  # tableName: x
+  # dynamodb:
+  #   stages:
+  #     - dev   
+  #   start:
+  #     port: 8000
+  #     inMemory: true
+  #     migrate: true
+  #     seed: true
+  #   migration: 
+  #     dir: offline/migrations
 
-    seed:
-      domain:
-        sources:
-          - table: ourLT-prod
+  #   seed:
+  #     domain:
+  #       sources:
+  #         - table: ourLT-prod
 
 
