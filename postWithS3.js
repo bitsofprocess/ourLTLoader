@@ -33,8 +33,7 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-// module.exports.
-const postWithS3 = async (file, dynamodb, title, owner, team_id) => {
+module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
   try {
    
     const questionsArray = await getCsvFromS3(file);
@@ -84,8 +83,8 @@ const postWithS3 = async (file, dynamodb, title, owner, team_id) => {
 };
 
 // test data
-const ownerTest = "google_10940940941049";
-const newTitle = "Next Quiz";
-const myTeamId = "TEST";
+// const ownerTest = "google_10940940941049";
+// const newTitle = "Next Quiz";
+// const myTeamId = "TEST";
 
-postWithS3(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
+// postWithS3(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
