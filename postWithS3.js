@@ -1,4 +1,4 @@
-const { getDynamoTable, addNewTeamToDynamo, addQuestSetToExistingTeamInDynamo } = require("./modules/aws");
+const { getDynamoTable, addQuestSetToDynamo } = require("./modules/aws");
 const {
   getValidationDetails,
   validateCriteria,
@@ -33,9 +33,10 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
+// module.exports.
+const postWithS3 = async (file, dynamodb, title, owner, team_id) => {
   try {
-
+   
     const questionsArray = await getCsvFromS3(file);
 
     const dynamoTable = await getDynamoTable(dynamodb);
@@ -46,14 +47,15 @@ module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
       dynamoTable,
       team_id
     );
-  
+      
     const allCriteriaValid = await validateCriteria(validationCriteriaObject);
-
+    
     const teamIdExistsInDynamo = await checkTableForTeamId(dynamoTable, team_id);
-
+    
     if (!allCriteriaValid) {
       console.log("CSV failed Validation: ", validationCriteriaObject);
     } else {
+    
       const structuredQuestions = await assignIndexes(questionsArray);
 
       const newSetId = await getNewSetId(teamIdExistsInDynamo, dynamoTable, team_id);
@@ -65,22 +67,15 @@ module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
         title,
         structuredQuestions
       );
-      
-
+  
       const updatedQuestionSetArray = await addToExistingTable(
         wrappedQuestionSet,
         dynamoTable,
         team_id
       );
 
-      let result; 
-      
-      if (teamIdExistsInDynamo) {
-        result = await addQuestSetToExistingTeamInDynamo(team_id, updatedQuestionSetArray, dynamodb);
-      } else {
-        result = await addNewTeamToDynamo(team_id, wrappedQuestionSet, dynamodb);
-      }
-      return result;
+      const result = await addQuestSetToDynamo(team_id, updatedQuestionSetArray, dynamodb);
+
     }
   } catch (err) {
     console.error(err);
@@ -89,8 +84,8 @@ module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
 };
 
 // test data
-// const ownerTest = "google_10940940941049";
-// const newTitle = "4th Quiz";
-// const myTeamId = "TEST";
+const ownerTest = "google_10940940941049";
+const newTitle = "Next Quiz";
+const myTeamId = "TEST";
 
-// postOurLT(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
+postWithS3(csvFile, dynamodb, newTitle, ownerTest, myTeamId);
