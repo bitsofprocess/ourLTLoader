@@ -84,17 +84,20 @@ module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team
 	
 	const newTable = dynamoTable;
 
-		let updatedQuestionSet;
+	let updatedQuestionSet;
 
-		newTable.map(teamObj => {
-			if (teamObj.team_id === team_id) {
-				updatedQuestionSet = [...teamObj.question_sets, wrappedQuestionSet]
+	newTable.map(teamObj => {
+		if (teamObj.team_id === team_id) {
+			updatedQuestionSet = [...teamObj.question_sets, wrappedQuestionSet]
 		
-			} else {
-				'format.addToExistingTable error'
-			}
-		}) 
+	
+		} else {
+			
+			updatedQuestionSet = [wrappedQuestionSet]
+		}
+	}) 
 
-		return updatedQuestionSet;
+	
+	return updatedQuestionSet;
 
 };
