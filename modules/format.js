@@ -41,26 +41,29 @@ module.exports.assignIndexes = async (questionsArray) => {
 	return newJson;
 };
 
-module.exports.getNewSetId = async (teamIdExistsInDynamo, dynamoTable, team_id) => {
+module.exports.getNewSetId = async (
+	teamIdExistsInDynamo,
+	dynamoTable,
+	team_id
+) => {
 	let newSetId;
-	
+
 	if (teamIdExistsInDynamo) {
-		dynamoTable.map(teamObj => {
+		dynamoTable.map((teamObj) => {
 			if (teamObj.team_id === team_id) {
 				const questionSets = teamObj.question_sets;
-				let existingSetIds = questionSets.map(set => set.set_id);
+
+				let existingSetIds = questionSets.map((set) => set.set_id);
 
 				newSetId = Math.max(...existingSetIds) + 1;
-			} 
-			
-		})
+			}
+		});
 	} else {
-		newSetId = 1
+		newSetId = 1;
 	}
-	
-	return newSetId;
-}
 
+	return newSetId;
+};
 
 module.exports.wrapQuestionSet = async (
 	teamIdExistsInDynamo,
@@ -69,35 +72,41 @@ module.exports.wrapQuestionSet = async (
 	title,
 	structuredQuestions
 ) => {
-	
-		let wrappedQuestionSet = {
-			set_id: newSetId,
-			owner: owner,
-			title: title,
-			questions: structuredQuestions,
-		};
+	let wrappedQuestionSet = {
+		set_id: newSetId,
+		owner: owner,
+		title: title,
+		questions: structuredQuestions,
+	};
 
 	return wrappedQuestionSet;
 };
 
-module.exports.addToExistingTable = async (wrappedQuestionSet, dynamoTable, team_id) => {
-	
-	const newTable = dynamoTable;
+module.exports.addToExistingTable = async (
+	wrappedQuestionSet,
+	dynamoTable,
+	team_id
+) => {
+	let newTable = dynamoTable;
 
-	let updatedQuestionSet;
+	let teamIdArray = newTable.map((teamObj) => teamObj.team_id);
 
-	newTable.map(teamObj => {
-		if (teamObj.team_id === team_id) {
-			updatedQuestionSet = [...teamObj.question_sets, wrappedQuestionSet]
-		
-	
-		} else {
-			
-			updatedQuestionSet = [wrappedQuestionSet]
-		}
-	}) 
+	if (teamIdArray.includes(team_id)) {
+		newTable.map((teamObj) => {
 
-	
-	return updatedQuestionSet;
+			if (teamObj.team_id === team_id) {
 
+				teamObj.question_sets.push(wrappedQuestionSet);
+
+			}
+		});
+	} else {
+
+		newTable.push({
+			question_sets: [wrappedQuestionSet],
+			team_id: team_id,
+		});
+	}
+
+	return newTable;
 };
