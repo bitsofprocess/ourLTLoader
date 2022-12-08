@@ -87,26 +87,24 @@ module.exports.addToExistingTable = async (
 	dynamoTable,
 	team_id
 ) => {
-	let newTable = dynamoTable;
-
-	let teamIdArray = newTable.map((teamObj) => teamObj.team_id);
+	let updatedQuestionSetArray;
+	let teamIdArray = dynamoTable.map((teamObj) => teamObj.team_id);
 
 	if (teamIdArray.includes(team_id)) {
-		newTable.map((teamObj) => {
+		
+	dynamoTable.map(teamObj => {
+		
+		if (teamObj.team_id == team_id) {
+			updatedQuestionSetArray = teamObj.question_sets;
+		}
+	})
 
-			if (teamObj.team_id === team_id) {
+	updatedQuestionSetArray.push(wrappedQuestionSet);
+	
+	} else if (!teamIdArray.includes(team_id)) {
 
-				teamObj.question_sets.push(wrappedQuestionSet);
-
-			}
-		});
-	} else {
-
-		newTable.push({
-			question_sets: [wrappedQuestionSet],
-			team_id: team_id,
-		});
+		updatedQuestionSetArray = [wrappedQuestionSet];
 	}
-
-	return newTable;
+	
+	return updatedQuestionSetArray;
 };
