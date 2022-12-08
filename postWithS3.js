@@ -34,8 +34,7 @@ AWS.config = new AWS.Config({
 // Create DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-// module.exports.
-const postWithS3 = async (file, dynamodb, title, owner, team_id) => {
+module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
 	try {
 		const questionsArray = await getCsvFromS3(file);
 
