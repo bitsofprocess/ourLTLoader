@@ -27,10 +27,42 @@ module.exports.maxLengthCheck = async (questionsArray) => {
 
 	questionsArray.forEach((element) => {
 		for (key in element) {
-			if (element[key].length < 200) {
-				lengthCheck.push(true);
-			} else {
-				lengthCheck.push(false);
+            if (key === "question") {
+                if (element[key].length < 70) {
+                    lengthCheck.push(true);
+                } else {
+                    lengthCheck.push(false);
+                }
+            } else {
+                if (element[key].length < 40) {
+                    lengthCheck.push(true);
+                } else {
+                    lengthCheck.push(false);
+                } 
+            }   
+		}
+	});
+
+	if (lengthCheck.includes(false)) {
+		passesLengthCheck = false;
+	} else {
+		passesLengthCheck = true;
+	}
+	return passesLengthCheck;
+};
+
+module.exports.maxLengthCheck = async (questionsArray, keyName, targetLength) => {
+	const lengthCheck = [];
+	let passesLengthCheck;
+
+	questionsArray.forEach((element) => {
+		for (key in element) {
+			if (key === keyName) {
+				if (element[key].length < targetLength) {
+					lengthCheck.push(true);
+				} else {
+					lengthCheck.push(false);
+				}
 			}
 		}
 	});
@@ -144,25 +176,25 @@ module.exports.getValidationDetails = async (
 		passesLengthCheck,
 		passesTitleCheck,
 	};
-
+	
 	validationCriteria.passesCharCheck = await exports.checkForSpecialChar(
 		questionsArray
 	);
-
+	
 	validationCriteria.allValuesPresent = await exports.checkAllValues(
 		questionsArray
 	);
-
+	
 	validationCriteria.passesLengthCheck = await exports.maxLengthCheck(
 		questionsArray
 	);
-
+	
 	validationCriteria.passesTitleCheck = await exports.compareTitles(
 		dynamoTable,
 		title,
 		team_id
 	);
-
+	
 	return validationCriteria;
 
 };
@@ -176,6 +208,4 @@ module.exports.checkTableForTeamId = async (dynamoTable, team_id) => {
 	} else {
 		return true;
 	}
-
-	// return teamIdExistsInDynamo;
 };
