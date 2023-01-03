@@ -3,9 +3,7 @@ app: ourlt
 service: ourLT
 frameworkVersion: '3'
 plugins:
-  # - serverless-webpack
   - serverless-dynamodb-local
-  # - serverless-dynamodb-client
   - serverless-offline
 
 provider:
@@ -20,16 +18,7 @@ provider:
   iam:
     role:
       statements:
-  #       - Effect: Allow
-  #         Action:
-  #           - dynamodb:Query
-  #           - dynamodb:Scan
-  #           - dynamodb:GetItem
-  #           - dynamodb:PutItem
-  #           - dynamodb:UpdateItem
-  #           - dynamodb:DeleteItem
-          # Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
-    # iamRoleStatements:
+
         - Effect: Allow
           Action:
               - dynamodb:*
@@ -48,18 +37,12 @@ package:
 functions:
   simple:
     handler: SLStest.simple
+   
     events:
       - httpApi:
           path: /
           method: post
           cors: true
-  # postOurLT:
-  #   handler: post.postOurLT
-  #   events:
-  #     - httpApi:
-  #         path: /
-  #         method: get, post
-  #         cors: true 
 
 resources:
   Resources:
@@ -77,27 +60,6 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-# custom:
-#  webpack:
-#   webpackConfig: 'webpack.config.js' # Name of webpack configuration file
-#   includeModules: false # Node modules configuration for packaging
-#   packager: 'npm' # Packager that will be used to package your external modules
 
-  # tableName: x
-  # dynamodb:
-  #   stages:
-  #     - dev   
-  #   start:
-  #     port: 8000
-  #     inMemory: true
-  #     migrate: true
-  #     seed: true
-  #   migration: 
-  #     dir: offline/migrations
-
-  #   seed:
-  #     domain:
-  #       sources:
-  #         - table: ourLT-prod
 
 
