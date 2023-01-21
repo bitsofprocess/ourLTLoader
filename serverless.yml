@@ -2,16 +2,15 @@ org: bitsofprocess
 app: ourlt
 service: ourLT
 frameworkVersion: '3'
-plugins:
-  - serverless-dynamodb-local
-  - serverless-offline
+# plugins:
+  # - serverless-dynamodb-local
+  # - serverless-offline
 
 provider:
   name: aws
   stage: dev
   runtime: nodejs14.x
   environment:
-      # tableName: ${self:custom.tableName}
       dynamoTableName: ${self:custom.dynamoTableName}
   httpApi:
     cors: true

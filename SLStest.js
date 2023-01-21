@@ -8,7 +8,8 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.simple = async (event, context, callback) => {
   const {file, title, owner, team_id} = JSON.parse(event.body);
-  console.log(event);
+  console.log('event:' + JSON.stringify(event));
+  console.log('process.env' + JSON.stringify(process.env));
   let result;
 
   try {

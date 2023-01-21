@@ -1,9 +1,22 @@
+// const dynamoTableName = 'ourLT-apptest'
+
+// ---------
+
 // Load the AWS SDK for Node.js
 const AWS = require("aws-sdk");
-const dynamoTableName = process.env.dynamoTableName;
+
+let dynamoTableName = ''
+if (!process.env.dynamoTableName) {
+  dynamoTableName = 'ourLT-apptest';
+} else {
+  dynamoTableName = process.env.dynamoTableName;
+}
+
+
 module.exports.getDynamoTable = async (dynamodb) => {
+  // console.log(process.env)
   var params = {
-    TableName: "ourLT-prod",
+    TableName: dynamoTableName,
   };
 
   try {
@@ -18,20 +31,44 @@ module.exports.getDynamoTable = async (dynamodb) => {
 };
 
 module.exports.addQuestSetToDynamo = async (team_id, updatedQuestionSetArray, dynamodb) => {
-  let params = {
-    RequestItems: {
-      "ourLT-prod": [
-        {
-          PutRequest: {
-            Item: {
-              team_id: team_id,
-              question_sets: updatedQuestionSetArray,
-            },
-          },
-        },
-      ],
-    },
-  };
+ 
+  // let params = {
+  //   RequestItems: {
+  //     dynamoTableName: [
+  //       {
+  //         PutRequest: {
+  //           Item: {
+  //             team_id: team_id,
+  //             question_sets: updatedQuestionSetArray,
+  //           },
+  //         },
+  //       },
+  //     ],
+  //   },
+  // };
+
+  let PutRequest = {
+    PutRequest: {
+        Item: {
+          team_id: team_id,
+          question_sets: updatedQuestionSetArray,
+        }
+      }
+  }
+
+  let RequestItems = {};
+  RequestItems[dynamoTableName] = [];
+  RequestItems[dynamoTableName][0] = PutRequest;
+  let params = {};
+  params.RequestItems = RequestItems;
+
+
+  //   PutRequest = {
+  //   Item: {
+  //     team_id: team_id,
+  //     question_sets: updatedQuestionSetArray,
+  //   },
+  // }
 
   try {
     res = await dynamodb.batchWrite(params).promise();

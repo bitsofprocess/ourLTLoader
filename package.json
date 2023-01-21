@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "aws-sdk": "^2.1291.0",
     "csvtojson": "^2.0.10"
   }
 }
