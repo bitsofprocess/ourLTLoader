@@ -1,7 +1,3 @@
-// const dynamoTableName = 'ourLT-apptest'
-
-// ---------
-
 // Load the AWS SDK for Node.js
 const AWS = require("aws-sdk");
 
@@ -12,9 +8,8 @@ if (!process.env.dynamoTableName) {
   dynamoTableName = process.env.dynamoTableName;
 }
 
-
 module.exports.getDynamoTable = async (dynamodb) => {
-  // console.log(process.env)
+
   var params = {
     TableName: dynamoTableName,
   };
@@ -32,21 +27,6 @@ module.exports.getDynamoTable = async (dynamodb) => {
 
 module.exports.addQuestSetToDynamo = async (team_id, updatedQuestionSetArray, dynamodb) => {
  
-  // let params = {
-  //   RequestItems: {
-  //     dynamoTableName: [
-  //       {
-  //         PutRequest: {
-  //           Item: {
-  //             team_id: team_id,
-  //             question_sets: updatedQuestionSetArray,
-  //           },
-  //         },
-  //       },
-  //     ],
-  //   },
-  // };
-
   let PutRequest = {
     PutRequest: {
         Item: {
@@ -61,14 +41,6 @@ module.exports.addQuestSetToDynamo = async (team_id, updatedQuestionSetArray, dy
   RequestItems[dynamoTableName][0] = PutRequest;
   let params = {};
   params.RequestItems = RequestItems;
-
-
-  //   PutRequest = {
-  //   Item: {
-  //     team_id: team_id,
-  //     question_sets: updatedQuestionSetArray,
-  //   },
-  // }
 
   try {
     res = await dynamodb.batchWrite(params).promise();
