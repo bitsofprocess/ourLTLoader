@@ -5,9 +5,8 @@ const { getDynamoTable, addQuestSetToDynamo } = require('./modules/aws');
 const {
 	getValidationDetails,
 	validateCriteria,
+	checkTableForTeamId
 } = require('./modules/validation');
-
-const { checkTableForTeamId } = require('./modules/validation');
 
 const {
 	assignIndexes,
@@ -48,7 +47,7 @@ module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
 		if (!allCriteriaValid) {
 
 			console.log("CSV failed Validation: ", validationCriteriaObject);
-			
+
 		} else {
 			const structuredQuestions = await assignIndexes(questionsArray);
 		
