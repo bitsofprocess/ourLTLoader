@@ -1,7 +1,6 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 
-
 const { getDynamoTable, addQuestSetToDynamo } = require('./modules/aws');
 const {
 	getValidationDetails,
@@ -47,7 +46,9 @@ module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
 		);
 
 		if (!allCriteriaValid) {
-		
+
+			console.log("CSV failed Validation: ", validationCriteriaObject);
+			
 		} else {
 			const structuredQuestions = await assignIndexes(questionsArray);
 		
