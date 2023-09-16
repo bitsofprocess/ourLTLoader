@@ -1,87 +1,79 @@
 // Load the AWS SDK for Node.js
-const AWS = require('aws-sdk');
+const AWS = require("aws-sdk");
 
-const { getDynamoTable, addQuestSetToDynamo } = require('./modules/aws');
+const { getDynamoTable, addQuestSetToDynamo } = require("./modules/aws");
 const {
-	getValidationDetails,
-	validateCriteria,
-	checkTableForTeamId
-} = require('./modules/validation');
+  getValidationDetails,
+  validateCriteria,
+  checkTableForTeamId,
+} = require("./modules/validation");
 
 const {
-	assignIndexes,
-	getNewSetId,
-	wrapQuestionSet,
-	addToExistingTable,
-} = require('./modules/format');
+  assignIndexes,
+  getNewSetId,
+  wrapQuestionSet,
+  addToExistingTable,
+} = require("./modules/format");
 
-const { getCsvFromS3 } = require('./s3Test');
+const { getCsvFromS3 } = require("./s3Test");
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.postWithS3 = async (file, dynamodb, title, owner, team_id) => {
-	let result;
-	try {
+  let result;
+  try {
+    const questionsArray = await getCsvFromS3(file);
 
-		const questionsArray = await getCsvFromS3(file);
+    const dynamoTable = await getDynamoTable(dynamodb);
 
-		const dynamoTable = await getDynamoTable(dynamodb);
+    const validationCriteriaObject = await getValidationDetails(
+      questionsArray,
+      title,
+      dynamoTable,
+      team_id
+    );
 
-		const validationCriteriaObject = await getValidationDetails(
-			questionsArray,
-			title,
-			dynamoTable,
-			team_id
-		);
+    const allCriteriaValid = await validateCriteria(validationCriteriaObject);
 
-	
-		const allCriteriaValid = await validateCriteria(
-			validationCriteriaObject
-		);
-		
-		const teamIdExistsInDynamo = await checkTableForTeamId(
-			dynamoTable,
-			team_id
-		);
+    const teamIdExistsInDynamo = await checkTableForTeamId(
+      dynamoTable,
+      team_id
+    );
 
-		if (!allCriteriaValid) {
+    if (!allCriteriaValid) {
+      console.log("CSV failed Validation: ", validationCriteriaObject);
+    } else {
+      const structuredQuestions = await assignIndexes(questionsArray);
 
-			console.log("CSV failed Validation: ", validationCriteriaObject);
+      const newSetId = await getNewSetId(
+        teamIdExistsInDynamo,
+        dynamoTable,
+        team_id
+      );
 
-		} else {
-			const structuredQuestions = await assignIndexes(questionsArray);
-		
-			const newSetId = await getNewSetId(
-				teamIdExistsInDynamo,
-				dynamoTable,
-				team_id
-			);
-		
-			const wrappedQuestionSet = await wrapQuestionSet(
-				teamIdExistsInDynamo,
-				newSetId,
-				owner,
-				title,
-				structuredQuestions
-			);
-		
-			const updatedQuestionSetArray = await addToExistingTable(
-				wrappedQuestionSet,
-				dynamoTable,
-				team_id
-			);
-		
-			result = await addQuestSetToDynamo(
-				team_id,
-				updatedQuestionSetArray,
-				dynamodb
-			);
-		}
-	
-	} 
-	catch (err) {
-		console.error(err);
-		throw new Error(err);
-	}
-return result;
+      const wrappedQuestionSet = await wrapQuestionSet(
+        teamIdExistsInDynamo,
+        newSetId,
+        owner,
+        title,
+        structuredQuestions
+      );
+
+      const updatedQuestionSetArray = await addToExistingTable(
+        wrappedQuestionSet,
+        dynamoTable,
+        team_id
+      );
+
+      result = await addQuestSetToDynamo(
+        team_id,
+        updatedQuestionSetArray,
+        dynamodb
+      );
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error(err);
+  }
+  return result;
 };
